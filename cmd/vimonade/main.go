@@ -5,6 +5,7 @@ import (
 	"os"
 
 	log "github.com/inconshreveable/log15"
+	"google.golang.org/grpc"
 
 	"github.com/jrc2139/vimonade/client"
 	"github.com/jrc2139/vimonade/lemon"
@@ -46,13 +47,17 @@ func Do(c *lemon.CLI, args []string) int {
 		return lemon.Help
 	}
 
-	lc := client.New(c, logger)
 	var err error
 
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	lc := client.New(c, conn, logger)
+
 	switch c.Type {
-	case lemon.OPEN:
-		logger.Debug("Opening URL")
-		err = lc.Open(c.DataSource, c.TransLocalfile, c.TransLoopback)
 	case lemon.COPY:
 		logger.Debug("Copying text")
 		err = lc.Copy(c.DataSource)
@@ -72,6 +77,7 @@ func Do(c *lemon.CLI, args []string) int {
 		writeError(c, err)
 		return lemon.RPCError
 	}
+
 	return lemon.Success
 }
 

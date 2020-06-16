@@ -1,21 +1,22 @@
 package server
 
 import (
-	"encoding/base64"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
-	"os"
 
 	"github.com/atotto/clipboard"
 	log "github.com/inconshreveable/log15"
+	"github.com/pocke/go-iprange"
+	"github.com/vmihailenco/msgpack/v5"
+
 	"github.com/jrc2139/vimonade/lemon"
 	"github.com/jrc2139/vimonade/models"
-	"github.com/pocke/go-iprange"
-	"github.com/skratchdot/open-golang/open"
-	"github.com/vmihailenco/msgpack/v5"
+	"github.com/jrc2139/vimonade/pkg/protocol/grpc"
+	v1 "github.com/jrc2139/vimonade/pkg/service/v1"
 )
 
 const MSGPACK = "application/x-msgpack"
@@ -121,67 +122,6 @@ func translateLoopbackIP(uri string, remoteIP string) string {
 	return parsed.String()
 }
 
-func handleOpen(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Open only support get", 404)
-		return
-	}
-
-	q := r.URL.Query()
-	uri := q.Get("uri")
-	isBase64 := q.Get("base64")
-	if isBase64 == "true" {
-		decodeURI, err := base64.URLEncoding.DecodeString(uri)
-		if err != nil {
-			logger.Error("base64 decode error", "uri", uri)
-			return
-		}
-		uri = string(decodeURI)
-	}
-
-	transLoopback := q.Get("transLoopback")
-	if transLoopback == "true" {
-		remoteIP, _, _ := net.SplitHostPort(r.RemoteAddr)
-		uri = translateLoopbackIP(uri, remoteIP)
-	}
-
-	logger.Info("Open: ", "uri", uri)
-	open.Run(uri)
-}
-
-func handleUpload(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Upload only support post", 404)
-		return
-	}
-
-	r.ParseMultipartForm(10 << 20)
-	file, handler, err := r.FormFile("uploadFile")
-	if err != nil {
-		http.Error(w, "Error Retrieving the File", 500)
-		logger.Error("Error Retrieving the File", "err", err)
-		return
-	}
-	defer file.Close()
-
-	fileBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		http.Error(w, "Error Read the File", 500)
-		logger.Error("Error Read the File", "err", err)
-		return
-	}
-
-	ioutil.WriteFile(path+"/"+handler.Filename, fileBytes, os.ModePerm)
-
-	q := r.URL.Query()
-	isOpen := q.Get("open")
-	if isOpen == "true" {
-		uri := fmt.Sprintf("http://127.0.0.1:%d/files/%s", port, handler.Filename)
-		logger.Info("Open: ", "uri", uri)
-		open.Run(uri)
-	}
-}
-
 func middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodPost {
@@ -214,16 +154,26 @@ func Serve(c *lemon.CLI, _logger log.Logger) error {
 		logger.Error("allowIp error")
 		return err
 	}
+	// flag.Parse()
+	// lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+	// if err != nil {
+	// log.Fatalf("failed to listen: %v", err)
+	// }
+	// grpcServer := grpc.NewServer()
+	// pb.RegisterRouteGuideServer(grpcServer, &routeGuideServer{})
+	// ... // determine whether to use TLS
+	// grpcServer.Serve(lis)
 
-	os.MkdirAll(path, os.ModePerm)
-	http.Handle("/files/", http.StripPrefix("/files/", http.FileServer(http.Dir(path))))
-	http.Handle("/copy", middleware(http.HandlerFunc(handleCopy)))
-	http.Handle("/paste", middleware(http.HandlerFunc(handlePaste)))
-	http.Handle("/open", middleware(http.HandlerFunc(handleOpen)))
-	http.Handle("/upload", middleware(http.HandlerFunc(handleUpload)))
-	err = http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil)
-	if err != nil {
+	// http.Handle("/copy", middleware(http.HandlerFunc(handleCopy)))
+	// http.Handle("/paste", middleware(http.HandlerFunc(handlePaste)))
+	// err = http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil)
+	// if err != nil {
+	// return err
+	// }
+
+	if err := grpc.RunServer(context.Background(), v1.NewMessageServerService(c.LineEnding), fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
 		return err
 	}
+
 	return nil
 }
