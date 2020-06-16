@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package message;
+
+import "google/protobuf/empty.proto";
+
+service MessageService {
+  rpc Copy(Message) returns (google.protobuf.Empty) {}
+  rpc Paste(google.protobuf.Empty) returns (Message) {}
+}
+
+message Message {
+  string text = 1;
+}
