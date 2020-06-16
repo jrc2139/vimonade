@@ -4,8 +4,8 @@ Vimonade
 
 remote...lemote...lemode...vim...Vimonade!!! :lemon:
 
-Vimonade is a remote utility tool specifically for (neo)vim.
-(copy, paste) over HTTP/2.
+Vimonade is a remote utility tool specifically for Neovim.
+(copy, paste) over HTTP/2 forked from [Lemonade](https://github.com/lemonade-command/lemonade).
 
 [![Build Status](https://travis-ci.org/jrc2139/vimonade.svg?branch=master)](https://travis-ci.org/jrc2139/vimonade)
 
@@ -20,6 +20,13 @@ make install
 ```
 
 Or download from [latest release](https://github.com/jrc2139/vimonade/releases/latest)
+
+
+Configuration
+------------
+
+
+You must edit `runtime/autoload/provider/clipboard.vim` to include `vimonade` as an executable to find.
 
 
 Usage
