@@ -1,4 +1,4 @@
-module github.com/lemonade-command/lemonade
+module github.com/jrc2139/vimonade
 
 go 1.14
 
