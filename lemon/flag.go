@@ -67,7 +67,7 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 }
 
 func (c *CLI) flags() *flag.FlagSet {
-	flags := flag.NewFlagSet("lemonade", flag.ContinueOnError)
+	flags := flag.NewFlagSet("vimonade", flag.ContinueOnError)
 	flags.IntVar(&c.Port, "port", 2489, "TCP port number")
 	flags.StringVar(&c.Allow, "allow", "0.0.0.0/0,::/0", "Allow IP range")
 	flags.StringVar(&c.Host, "host", "localhost", "Destination host name.")
@@ -83,7 +83,7 @@ func (c *CLI) flags() *flag.FlagSet {
 func (c *CLI) parse(args []string, skip bool) error {
 	flags := c.flags()
 
-	confPath, err := homedir.Expand("~/.config/lemonade.toml")
+	confPath, err := homedir.Expand("~/.config/vimonade.toml")
 	if err == nil && !skip {
 		if confArgs, err := conflag.ArgsFrom(confPath); err == nil {
 			flags.Parse(confArgs)

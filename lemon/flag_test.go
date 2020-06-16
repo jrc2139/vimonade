@@ -96,7 +96,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "--host", "192.168.0.1", "--port", "1124", "open", "http://example.com"}, CLI{
+	assert([]string{"vimonade", "--host", "192.168.0.1", "--port", "1124", "open", "http://example.com"}, CLI{
 		Type:           OPEN,
 		Host:           "192.168.0.1",
 		Port:           1124,
@@ -107,7 +107,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "copy", "hogefuga"}, CLI{
+	assert([]string{"vimonade", "copy", "hogefuga"}, CLI{
 		Type:           COPY,
 		Host:           defaultHost,
 		Port:           defaultPort,
@@ -118,7 +118,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "paste"}, CLI{
+	assert([]string{"vimonade", "paste"}, CLI{
 		Type:           PASTE,
 		Host:           defaultHost,
 		Port:           defaultPort,
@@ -128,7 +128,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "--allow", "192.168.0.0/24", "server", "--port", "1124"}, CLI{
+	assert([]string{"vimonade", "--allow", "192.168.0.0/24", "server", "--port", "1124"}, CLI{
 		Type:           SERVER,
 		Host:           defaultHost,
 		Port:           1124,
@@ -138,7 +138,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "open", "--trans-loopback=false"}, CLI{
+	assert([]string{"vimonade", "open", "--trans-loopback=false"}, CLI{
 		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
@@ -148,7 +148,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "open", "--trans-loopback=true"}, CLI{
+	assert([]string{"vimonade", "open", "--trans-loopback=true"}, CLI{
 		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
@@ -158,7 +158,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "open", "--trans-localfile=false"}, CLI{
+	assert([]string{"vimonade", "open", "--trans-localfile=false"}, CLI{
 		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
@@ -168,7 +168,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "open", "--trans-localfile=true"}, CLI{
+	assert([]string{"vimonade", "open", "--trans-localfile=true"}, CLI{
 		Type:           OPEN,
 		Host:           defaultHost,
 		Port:           defaultPort,
@@ -178,7 +178,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "copy", "--no-fallback-messages", "hogefuga"}, CLI{
+	assert([]string{"vimonade", "copy", "--no-fallback-messages", "hogefuga"}, CLI{
 		Type:               COPY,
 		Host:               defaultHost,
 		Port:               defaultPort,
@@ -190,7 +190,7 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:           defaultLogLevel,
 	})
 
-	assert([]string{"lemonade", "paste", "--no-fallback-messages"}, CLI{
+	assert([]string{"vimonade", "paste", "--no-fallback-messages"}, CLI{
 		Type:               PASTE,
 		Host:               defaultHost,
 		Port:               defaultPort,

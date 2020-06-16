@@ -13,8 +13,8 @@ import (
 
 	"github.com/atotto/clipboard"
 	log "github.com/inconshreveable/log15"
-	"github.com/lemonade-command/lemonade/lemon"
-	"github.com/lemonade-command/lemonade/models"
+	"github.com/jrc2139/vimonade/lemon"
+	"github.com/jrc2139/vimonade/models"
 	"github.com/vmihailenco/msgpack/v5"
 )
 

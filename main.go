@@ -6,9 +6,9 @@ import (
 
 	log "github.com/inconshreveable/log15"
 
-	"github.com/lemonade-command/lemonade/client"
-	"github.com/lemonade-command/lemonade/lemon"
-	"github.com/lemonade-command/lemonade/server"
+	"github.com/jrc2139/vimonade/client"
+	"github.com/jrc2139/vimonade/lemon"
+	"github.com/jrc2139/vimonade/server"
 )
 
 var logLevelMap = map[int]log.Lvl{

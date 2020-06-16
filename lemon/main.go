@@ -7,12 +7,12 @@ import (
 )
 
 var Version string
-var Usage = fmt.Sprintf(`Usage: lemonade [options]... SUB_COMMAND [arg]
+var Usage = fmt.Sprintf(`Usage: vimonade [options]... SUB_COMMAND [arg]
 Sub Commands:
   open [URL]                  Open URL by browser
   copy [text]                 Copy text.
   paste                       Paste text.
-  server                      Start lemonade server.
+  server                      Start vimonade server.
 
 Options:
   --port=2489                 TCP port number
