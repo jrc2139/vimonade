@@ -3,18 +3,14 @@ package server
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
 
-	"github.com/atotto/clipboard"
 	log "github.com/inconshreveable/log15"
 	"github.com/pocke/go-iprange"
-	"github.com/vmihailenco/msgpack/v5"
 
 	"github.com/jrc2139/vimonade/lemon"
-	"github.com/jrc2139/vimonade/models"
 	"github.com/jrc2139/vimonade/pkg/protocol/grpc"
 	v1 "github.com/jrc2139/vimonade/pkg/service/v1"
 )
@@ -26,76 +22,6 @@ var lineEnding string
 var ra *iprange.Range
 var port int
 var path = "./files"
-
-func handleCopy(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Copy only support post", 404)
-		return
-	}
-
-	// Read body
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	defer r.Body.Close()
-
-	var m models.Message
-
-	if err := msgpack.Unmarshal(b, &m); err != nil {
-		logger.Error("error unmarshalling msgpack.", "err", err.Error())
-		http.Error(w, "error unmarshalling msgpack.", http.StatusInternalServerError)
-
-		return
-	}
-
-	text := lemon.ConvertLineEnding(m.Text, lineEnding)
-	logger.Debug("Copy:", "text", text)
-
-	if err := clipboard.WriteAll(text); err != nil {
-		logger.Error("error writing to clipboard.", "err", err.Error())
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-
-		return
-	}
-}
-
-func handlePaste(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Paste only support get", 404)
-		return
-	}
-
-	t, err := clipboard.ReadAll()
-	if err != nil {
-		logger.Error("error reading from clipboard.", "err", err.Error())
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-
-		return
-	}
-
-	w.Header().Set("content-type", MSGPACK)
-
-	w.WriteHeader(http.StatusOK)
-
-	b, err := msgpack.Marshal(&models.Message{Text: t})
-	if err != nil {
-		logger.Error("error marshalling msgpack.", "err", err.Error())
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-
-		return
-	}
-
-	if _, err := w.Write(b); err != nil {
-		logger.Error("error writing resp", "err", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-
-		return
-	}
-
-	logger.Debug("Paste: ", "text", t)
-}
 
 func translateLoopbackIP(uri string, remoteIP string) string {
 	parsed, err := url.Parse(uri)
