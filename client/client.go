@@ -10,11 +10,12 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/atotto/clipboard"
 	log "github.com/inconshreveable/log15"
 	"github.com/lemonade-command/lemonade/lemon"
+	"github.com/lemonade-command/lemonade/models"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 type client struct {
@@ -37,33 +38,51 @@ func New(c *lemon.CLI, logger log.Logger) *client {
 	}
 }
 
+const MSGPACK = "application/x-msgpack"
+
 func (c *client) Copy(text string) error {
 	c.logger.Debug("Sending: " + text)
 	url := fmt.Sprintf("%s/copy", c.addr)
-	_, err := http.Post(url, "text/plain", strings.NewReader(text))
+
+	b, err := msgpack.Marshal(&models.Message{Text: text})
+	if err != nil {
+		c.logger.Error("error marshalling msgpack.", "err", err.Error())
+		return err
+	}
+
+	resp, err := http.Post(url, MSGPACK, bytes.NewBuffer(b))
 	if err != nil {
 		clipboard.WriteAll(text)
 		return err
 	}
+	defer resp.Body.Close()
+
 	return nil
 }
 
 func (c *client) Paste() (string, error) {
 	url := fmt.Sprintf("%s/paste", c.addr)
+
 	r, err := http.Get(url)
 	if err != nil {
 		c.logger.Error("http error.", "err", err.Error())
 		return "", err
 	}
-
 	defer r.Body.Close()
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		c.logger.Error("http read body error.", "err", err.Error())
 		return "", err
 	}
 
-	return lemon.ConvertLineEnding(string(body), c.lineEnding), nil
+	var m models.Message
+
+	if err := msgpack.Unmarshal(body, &m); err != nil {
+		c.logger.Error("error unmarshalling msgpack.", "err", err.Error())
+	}
+
+	return lemon.ConvertLineEnding(m.Text, c.lineEnding), nil
 }
 
 func fileExists(fname string) bool {

@@ -37,6 +37,7 @@ func ConvertLineEnding(text, option string) string {
 	case "crlf", "CRLF":
 		text = regexp.MustCompile(`\r(.)|\r$`).ReplaceAllString(text, "\r\n$1")
 		text = regexp.MustCompile(`([^\r])\n|^\n`).ReplaceAllString(text, "$1\r\n")
+
 		return text
 	default:
 		return text
