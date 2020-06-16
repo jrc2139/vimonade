@@ -21,17 +21,6 @@ type client struct {
 	grpcClient         pb.MessageServiceClient
 }
 
-// func Orig(c *lemon.CLI, logger log.Logger) *client {
-// return &client{
-// host:               c.Host,
-// port:               c.Port,
-// addr:               fmt.Sprintf("http://%s:%d", c.Host, c.Port),
-// lineEnding:         c.LineEnding,
-// noFallbackMessages: c.NoFallbackMessages,
-// logger:             logger,
-// }
-// }
-
 func New(c *lemon.CLI, conn *grpc.ClientConn, logger log.Logger) *client {
 	return &client{
 		host:               c.Host,
@@ -49,13 +38,21 @@ const MSGPACK = "application/x-msgpack"
 func (c *client) Copy(text string) error {
 	c.logger.Debug("Sending: " + text)
 
-	_, err := c.grpcClient.Copy(context.Background(), &pb.Message{Text: text})
-	if err != nil {
-		// clipboard.WriteAll(text)
-		return err
-	}
+	// not interested in copying blank and newlines
+	switch text {
+	case "":
+		return nil
+	case "\n":
+		return nil
+	default:
+		_, err := c.grpcClient.Copy(context.Background(), &pb.Message{Text: text})
+		if err != nil {
+			// clipboard.WriteAll(text)
+			return err
+		}
 
-	return nil
+		return nil
+	}
 }
 
 func (c *client) Paste() (string, error) {
@@ -66,5 +63,5 @@ func (c *client) Paste() (string, error) {
 		return "", err
 	}
 
-	return lemon.ConvertLineEnding(text.Text, c.lineEnding), nil
+	return lemon.ConvertLineEnding(text.GetText(), c.lineEnding), nil
 }

@@ -25,7 +25,7 @@ func (s *messageServiceServer) Copy(ctx context.Context, message *v1.Message) (*
 	if message != nil {
 		log.Printf("Copy requested: message=%v", *message)
 
-		if err := clipboard.WriteAll(message.Text); err != nil {
+		if err := clipboard.WriteAll(message.GetText()); err != nil {
 			log.Printf("Writing to clipboard failed: %v", err)
 			return &empty.Empty{}, err
 		}
