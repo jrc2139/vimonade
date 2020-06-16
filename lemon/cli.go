@@ -6,8 +6,7 @@ type CommandType int
 
 // Commands
 const (
-	OPEN CommandType = iota + 1
-	COPY
+	COPY CommandType = iota + 1
 	PASTE
 	SERVER
 )

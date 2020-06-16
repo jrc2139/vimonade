@@ -22,38 +22,6 @@ func TestCLIParse(t *testing.T) {
 	defaultAllow := "0.0.0.0/0,::/0"
 	defaultLogLevel := 1
 
-	assert([]string{"xdg-open", "http://example.com"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
-		DataSource:     "http://example.com",
-		TransLoopback:  true,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
-	assert([]string{"/usr/bin/xdg-open", "http://example.com"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
-		DataSource:     "http://example.com",
-		TransLoopback:  true,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
-	assert([]string{"xdg-open"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
-		TransLoopback:  true,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
 	assert([]string{"pbpaste", "--port", "1124"}, CLI{
 		Type:           PASTE,
 		Host:           defaultHost,
@@ -96,17 +64,6 @@ func TestCLIParse(t *testing.T) {
 		LogLevel:       defaultLogLevel,
 	})
 
-	assert([]string{"vimonade", "--host", "192.168.0.1", "--port", "1124", "open", "http://example.com"}, CLI{
-		Type:           OPEN,
-		Host:           "192.168.0.1",
-		Port:           1124,
-		Allow:          defaultAllow,
-		DataSource:     "http://example.com",
-		TransLoopback:  true,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
 	assert([]string{"vimonade", "copy", "hogefuga"}, CLI{
 		Type:           COPY,
 		Host:           defaultHost,
@@ -133,46 +90,6 @@ func TestCLIParse(t *testing.T) {
 		Host:           defaultHost,
 		Port:           1124,
 		Allow:          "192.168.0.0/24",
-		TransLoopback:  true,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
-	assert([]string{"vimonade", "open", "--trans-loopback=false"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
-		TransLoopback:  false,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
-	assert([]string{"vimonade", "open", "--trans-loopback=true"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
-		TransLoopback:  true,
-		TransLocalfile: true,
-		LogLevel:       defaultLogLevel,
-	})
-
-	assert([]string{"vimonade", "open", "--trans-localfile=false"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
-		TransLoopback:  true,
-		TransLocalfile: false,
-		LogLevel:       defaultLogLevel,
-	})
-
-	assert([]string{"vimonade", "open", "--trans-localfile=true"}, CLI{
-		Type:           OPEN,
-		Host:           defaultHost,
-		Port:           defaultPort,
-		Allow:          defaultAllow,
 		TransLoopback:  true,
 		TransLocalfile: true,
 		LogLevel:       defaultLogLevel,
