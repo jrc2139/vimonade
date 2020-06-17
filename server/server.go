@@ -9,6 +9,7 @@ import (
 
 	log "github.com/inconshreveable/log15"
 	"github.com/pocke/go-iprange"
+	"google.golang.org/grpc/credentials"
 
 	"github.com/jrc2139/vimonade/lemon"
 	"github.com/jrc2139/vimonade/pkg/protocol/grpc"
@@ -69,7 +70,7 @@ func middleware(next http.Handler) http.Handler {
 	})
 }
 
-func Serve(c *lemon.CLI, _logger log.Logger) error {
+func Serve(c *lemon.CLI, creds credentials.TransportCredentials, _logger log.Logger) error {
 	logger = _logger
 	lineEnding = c.LineEnding
 	port = c.Port
@@ -97,7 +98,8 @@ func Serve(c *lemon.CLI, _logger log.Logger) error {
 	// return err
 	// }
 
-	if err := grpc.RunServer(context.Background(), v1.NewMessageServerService(c.LineEnding, logger), fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
+	// Server
+	if err := grpc.RunServer(context.Background(), v1.NewMessageServerService(c.LineEnding, logger), creds, fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
 		return err
 	}
 

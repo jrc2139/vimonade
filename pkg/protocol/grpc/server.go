@@ -6,19 +6,20 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
 	v1 "github.com/jrc2139/vimonade/pkg/api/v1"
 )
 
 // RunServer registers gRPC service and run server.
-func RunServer(ctx context.Context, srv v1.MessageServiceServer, serverAddr string) error {
+func RunServer(ctx context.Context, srv v1.MessageServiceServer, creds credentials.TransportCredentials, serverAddr string) error {
 	listen, err := net.Listen("tcp", serverAddr)
 	if err != nil {
 		return err
 	}
 
 	// register service
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.Creds(creds))
 	v1.RegisterMessageServiceServer(server, srv)
 
 	// start gRPC server
