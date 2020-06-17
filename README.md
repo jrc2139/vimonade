@@ -35,7 +35,6 @@ Usage
 ```sh
 Usage: vimonade [options]... SUB_COMMAND [arg]
 Sub Commands:
-  open [URL]                  Open URL by browser
   copy [text]                 Copy text.
   paste                       Paste text.
   server                      Start vimonade server.
