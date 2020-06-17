@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	empty "github.com/golang/protobuf/ptypes/empty"
+	wrappers "github.com/golang/protobuf/ptypes/wrappers"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,65 +26,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Message struct {
-	Text                 string   `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return proto.CompactTextString(m) }
-func (*Message) ProtoMessage()    {}
-func (*Message) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33c57e4bae7b9afd, []int{0}
-}
-
-func (m *Message) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message.Unmarshal(m, b)
-}
-func (m *Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message.Marshal(b, m, deterministic)
-}
-func (m *Message) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message.Merge(m, src)
-}
-func (m *Message) XXX_Size() int {
-	return xxx_messageInfo_Message.Size(m)
-}
-func (m *Message) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message proto.InternalMessageInfo
-
-func (m *Message) GetText() string {
-	if m != nil {
-		return m.Text
-	}
-	return ""
-}
-
-func init() {
-	proto.RegisterType((*Message)(nil), "message.Message")
-}
-
 func init() {
 	proto.RegisterFile("message.proto", fileDescriptor_33c57e4bae7b9afd)
 }
 
 var fileDescriptor_33c57e4bae7b9afd = []byte{
-	// 153 bytes of a gzipped FileDescriptorProto
+	// 151 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcd, 0x4d, 0x2d, 0x2e,
 	0x4e, 0x4c, 0x4f, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x87, 0x72, 0xa5, 0xa4, 0xd3,
 	0xf3, 0xf3, 0xd3, 0x73, 0x52, 0xf5, 0xc1, 0xc2, 0x49, 0xa5, 0x69, 0xfa, 0xa9, 0xb9, 0x05, 0x25,
-	0x95, 0x10, 0x55, 0x4a, 0xb2, 0x5c, 0xec, 0xbe, 0x10, 0x75, 0x42, 0x42, 0x5c, 0x2c, 0x25, 0xa9,
-	0x15, 0x25, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x60, 0xb6, 0x51, 0x25, 0x17, 0x1f, 0x54,
-	0x3a, 0x38, 0xb5, 0xa8, 0x2c, 0x33, 0x39, 0x55, 0xc8, 0x88, 0x8b, 0xc5, 0x39, 0xbf, 0xa0, 0x52,
-	0x48, 0x40, 0x0f, 0x66, 0x1d, 0x54, 0x81, 0x94, 0x98, 0x1e, 0xc4, 0x22, 0x3d, 0x98, 0x45, 0x7a,
-	0xae, 0x20, 0x8b, 0x94, 0x18, 0x84, 0x8c, 0xb9, 0x58, 0x03, 0x12, 0x8b, 0x4b, 0x52, 0x85, 0x70,
-	0x28, 0x91, 0xc2, 0x30, 0x4c, 0x89, 0x21, 0x89, 0x0d, 0xac, 0xc6, 0x18, 0x10, 0x00, 0x00, 0xff,
-	0xff, 0x2f, 0xe7, 0x76, 0x75, 0xd7, 0x00, 0x00, 0x00,
+	0x95, 0x10, 0x55, 0x52, 0x72, 0xe8, 0x92, 0xe5, 0x45, 0x89, 0x05, 0x05, 0xa9, 0x45, 0xc5, 0x10,
+	0x79, 0xa3, 0xe9, 0x8c, 0x5c, 0x7c, 0xbe, 0x10, 0x83, 0x82, 0x53, 0x8b, 0xca, 0x32, 0x93, 0x53,
+	0x85, 0xec, 0xb8, 0x58, 0x9c, 0xf3, 0x0b, 0x2a, 0x85, 0x64, 0xf4, 0x20, 0x7a, 0xf5, 0x60, 0x7a,
+	0xf5, 0x82, 0x4b, 0x8a, 0x32, 0xf3, 0xd2, 0xc3, 0x12, 0x73, 0x4a, 0x53, 0xa5, 0xc4, 0x30, 0x64,
+	0x5d, 0x41, 0xd6, 0x2a, 0x31, 0x08, 0xb9, 0x72, 0xb1, 0x06, 0x24, 0x16, 0x97, 0xa4, 0x12, 0x30,
+	0x00, 0xaf, 0xac, 0x12, 0x43, 0x12, 0x1b, 0x58, 0xdc, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x07,
+	0x31, 0xfd, 0x5a, 0xf7, 0x00, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -98,8 +56,8 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MessageServiceClient interface {
-	Copy(ctx context.Context, in *Message, opts ...grpc.CallOption) (*empty.Empty, error)
-	Paste(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Message, error)
+	Copy(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*empty.Empty, error)
+	Paste(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error)
 }
 
 type messageServiceClient struct {
@@ -110,7 +68,7 @@ func NewMessageServiceClient(cc grpc.ClientConnInterface) MessageServiceClient {
 	return &messageServiceClient{cc}
 }
 
-func (c *messageServiceClient) Copy(ctx context.Context, in *Message, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *messageServiceClient) Copy(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/message.MessageService/Copy", in, out, opts...)
 	if err != nil {
@@ -119,8 +77,8 @@ func (c *messageServiceClient) Copy(ctx context.Context, in *Message, opts ...gr
 	return out, nil
 }
 
-func (c *messageServiceClient) Paste(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Message, error) {
-	out := new(Message)
+func (c *messageServiceClient) Paste(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error) {
+	out := new(wrappers.StringValue)
 	err := c.cc.Invoke(ctx, "/message.MessageService/Paste", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -130,18 +88,18 @@ func (c *messageServiceClient) Paste(ctx context.Context, in *empty.Empty, opts 
 
 // MessageServiceServer is the server API for MessageService service.
 type MessageServiceServer interface {
-	Copy(context.Context, *Message) (*empty.Empty, error)
-	Paste(context.Context, *empty.Empty) (*Message, error)
+	Copy(context.Context, *wrappers.StringValue) (*empty.Empty, error)
+	Paste(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error)
 }
 
 // UnimplementedMessageServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedMessageServiceServer struct {
 }
 
-func (*UnimplementedMessageServiceServer) Copy(ctx context.Context, req *Message) (*empty.Empty, error) {
+func (*UnimplementedMessageServiceServer) Copy(ctx context.Context, req *wrappers.StringValue) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Copy not implemented")
 }
-func (*UnimplementedMessageServiceServer) Paste(ctx context.Context, req *empty.Empty) (*Message, error) {
+func (*UnimplementedMessageServiceServer) Paste(ctx context.Context, req *wrappers.StringValue) (*wrappers.StringValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Paste not implemented")
 }
 
@@ -150,7 +108,7 @@ func RegisterMessageServiceServer(s *grpc.Server, srv MessageServiceServer) {
 }
 
 func _MessageService_Copy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Message)
+	in := new(wrappers.StringValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -162,13 +120,13 @@ func _MessageService_Copy_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/message.MessageService/Copy",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).Copy(ctx, req.(*Message))
+		return srv.(MessageServiceServer).Copy(ctx, req.(*wrappers.StringValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _MessageService_Paste_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(wrappers.StringValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -180,7 +138,7 @@ func _MessageService_Paste_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/message.MessageService/Paste",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).Paste(ctx, req.(*empty.Empty))
+		return srv.(MessageServiceServer).Paste(ctx, req.(*wrappers.StringValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }

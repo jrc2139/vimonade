@@ -3,12 +3,9 @@ syntax = "proto3";
 package message;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
 
 service MessageService {
-  rpc Copy(Message) returns (google.protobuf.Empty) {}
-  rpc Paste(google.protobuf.Empty) returns (Message) {}
-}
-
-message Message {
-  string text = 1;
+  rpc Copy(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
+  rpc Paste(google.protobuf.StringValue) returns (google.protobuf.StringValue) {}
 }
