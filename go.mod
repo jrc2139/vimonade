@@ -3,7 +3,9 @@ module github.com/jrc2139/vimonade
 go 1.14
 
 require (
+	github.com/GeertJohan/go.rice v1.0.0
 	github.com/atotto/clipboard v0.1.2
+	github.com/daaku/go.zipexe v1.0.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/protobuf v1.4.2
 	github.com/inconshreveable/log15 v0.0.0-20200109203555-b30bc20e4fd1
