@@ -51,7 +51,7 @@ func Do(c *lemon.CLI, args []string) int {
 
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), grpc.WithInsecure())
 	if err != nil {
-		panic(err)
+		logger.Debug(err.Error())
 	}
 	defer conn.Close()
 

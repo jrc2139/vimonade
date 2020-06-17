@@ -97,7 +97,7 @@ func Serve(c *lemon.CLI, _logger log.Logger) error {
 	// return err
 	// }
 
-	if err := grpc.RunServer(context.Background(), v1.NewMessageServerService(c.LineEnding), fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
+	if err := grpc.RunServer(context.Background(), v1.NewMessageServerService(c.LineEnding, logger), fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
 		return err
 	}
 

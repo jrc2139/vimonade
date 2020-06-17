@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/atotto/clipboard"
+	"github.com/golang/protobuf/ptypes/wrappers"
 	log "github.com/inconshreveable/log15"
 	"google.golang.org/grpc"
 
@@ -45,23 +47,30 @@ func (c *client) Copy(text string) error {
 	case "\n":
 		return nil
 	default:
-		_, err := c.grpcClient.Copy(context.Background(), &pb.Message{Text: text})
+		_, err := c.grpcClient.Copy(context.Background(), &wrappers.StringValue{Value: text})
 		if err != nil {
-			// clipboard.WriteAll(text)
-			return err
+			c.logger.Debug(err.Error())
 		}
-
-		return nil
 	}
+
+	if err := clipboard.WriteAll(text); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) Paste() (string, error) {
 	c.logger.Debug("Receiving")
 
-	text, err := c.grpcClient.Paste(context.Background(), nil)
+	text, err := clipboard.ReadAll()
 	if err != nil {
 		return "", err
 	}
 
-	return lemon.ConvertLineEnding(text.GetText(), c.lineEnding), nil
+	if _, err := c.grpcClient.Paste(context.Background(), &wrappers.StringValue{Value: text}); err != nil {
+		c.logger.Debug(err.Error())
+	}
+
+	return lemon.ConvertLineEnding(text, c.lineEnding), nil
 }

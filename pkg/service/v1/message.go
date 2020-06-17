@@ -2,47 +2,55 @@ package v1
 
 import (
 	"context"
-	"log"
 
 	"github.com/atotto/clipboard"
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/golang/protobuf/ptypes/wrappers"
+
+	log "github.com/inconshreveable/log15"
 
 	"github.com/jrc2139/vimonade/lemon"
 	v1 "github.com/jrc2139/vimonade/pkg/api/v1"
 )
 
-// MessageServer is implementation of v1.MessageServer proto interface
+// MessageServer is implementation of v1.MessageServer proto interface.
 type messageServiceServer struct {
 	lineEnding string
+	logger     log.Logger
 }
 
-// NewMessageServerService creates Audio service object
-func NewMessageServerService(lineEnding string) v1.MessageServiceServer {
-	return &messageServiceServer{lineEnding: lineEnding}
+// NewMessageServerService creates Audio service object.
+func NewMessageServerService(lineEnding string, logger log.Logger) v1.MessageServiceServer {
+	return &messageServiceServer{lineEnding: lineEnding, logger: logger}
 }
 
-func (s *messageServiceServer) Copy(ctx context.Context, message *v1.Message) (*empty.Empty, error) {
+func (s *messageServiceServer) Copy(ctx context.Context, message *wrappers.StringValue) (*empty.Empty, error) {
 	if message != nil {
-		log.Printf("Copy requested: message=%v", *message)
+		s.logger.Debug("Copy requested: message=%v", message)
 
-		if err := clipboard.WriteAll(message.GetText()); err != nil {
-			log.Printf("Writing to clipboard failed: %v", err)
+		if err := clipboard.WriteAll(message.Value); err != nil {
+			s.logger.Debug("Writing to clipboard failed: %v", err)
 			return &empty.Empty{}, err
 		}
 	} else {
-		log.Print("Copy requested: message=<empty>")
+		s.logger.Debug("Copy requested: message=<empty>")
 	}
 
 	return &empty.Empty{}, nil
 }
 
-func (s *messageServiceServer) Paste(ctx context.Context, empty *empty.Empty) (*v1.Message, error) {
-	text, err := clipboard.ReadAll()
-	if err != nil {
-		log.Printf("Error reading from clipboard=%v", err)
+func (s *messageServiceServer) Paste(ctx context.Context, message *wrappers.StringValue) (*wrappers.StringValue, error) {
+	if message != nil {
+		s.logger.Debug("Paste requested: message=%v", message)
 
-		return &v1.Message{}, nil
+		_, err := clipboard.ReadAll()
+		if err != nil {
+			s.logger.Debug("Writing to clipboard failed: %v", err)
+			return &wrappers.StringValue{Value: ""}, err
+		}
+	} else {
+		s.logger.Debug("Paste requested: message=<empty>")
 	}
 
-	return &v1.Message{Text: lemon.ConvertLineEnding(text, s.lineEnding)}, nil
+	return &wrappers.StringValue{Value: lemon.ConvertLineEnding(message.Value, s.lineEnding)}, nil
 }
