@@ -16,3 +16,15 @@
 # vendor/
 dist/
 release_pkg/
+.DS_Store
+
+ca.key
+ca.cert
+ca.srl
+service.key
+service.csr
+service.pem
+ca-org.cert
+ca-vault.cert
+
+vimonade
