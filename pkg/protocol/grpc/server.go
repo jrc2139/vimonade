@@ -19,7 +19,16 @@ func RunServer(ctx context.Context, srv v1.MessageServiceServer, creds credentia
 	}
 
 	// register service
-	server := grpc.NewServer(grpc.Creds(creds))
+	var server *grpc.Server
+
+	if creds == nil {
+		// insecure
+		server = grpc.NewServer()
+	} else {
+		// secure
+		server = grpc.NewServer(grpc.Creds(creds))
+	}
+
 	v1.RegisterMessageServiceServer(server, srv)
 
 	// start gRPC server

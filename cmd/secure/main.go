@@ -11,8 +11,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	// _ "github.com/jrc2139/vimonade/certs"
-
 	"github.com/jrc2139/vimonade/client"
 	"github.com/jrc2139/vimonade/lemon"
 	"github.com/jrc2139/vimonade/server"
@@ -57,7 +55,7 @@ func Do(c *lemon.CLI, args []string) int {
 	}
 
 	// find a rice.Box
-	certBox, err := conf.FindBox("certs")
+	certBox, err := conf.FindBox("../../certs")
 	if err != nil {
 		panic(err)
 	}
@@ -67,29 +65,12 @@ func Do(c *lemon.CLI, args []string) int {
 		panic(err)
 	}
 
-	// serverPem, err := parcello.Open("service.pem")
-	// if err != nil {
-	// logger.Crit("Failed to open service.pem", err, nil)
-	// }
-
-	// defer serverPem.Close()
-
-	// var serverPemBytes []byte
-
-	// if n, err := serverPem.Read(serverPemBytes); err != nil {
-	// n, err := serverPem.Read(serverPemBytes)
-	// if err != nil {
-	// logger.Crit("Failed to read service.pem", err, nil)
-	// }
-	// fmt.Println(n)
-
 	cp := x509.NewCertPool()
 	if !cp.AppendCertsFromPEM(serverPemBytes) {
 		logger.Crit("Failed to append to cert", err, nil)
 	}
 
 	clientCreds := credentials.NewTLS(&tls.Config{ServerName: "", RootCAs: cp})
-	// credentials.NewClientTLSFromFile()
 
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), grpc.WithTransportCredentials(clientCreds))
 	if err != nil {
@@ -120,21 +101,6 @@ func Do(c *lemon.CLI, args []string) int {
 			logger.Crit("Failed to output Paste to stdin", err, nil)
 		}
 	case lemon.SERVER:
-		// serverKey, err := parcello.Open("service.key")
-		// if err != nil {
-		// logger.Crit("Failed to load key file", err, nil)
-		// return lemon.RPCError
-		// }
-		//
-		// var serverKeyBytes []byte
-		//
-		// if _, err := serverKey.Read(serverKeyBytes); err != nil {
-		// logger.Crit("Failed to read service.key", err, nil)
-		// return lemon.RPCError
-		// }
-		//
-		// defer serverKey.Close()
-
 		serverKeyBytes, err := certBox.Bytes("service.key")
 		if err != nil {
 			panic(err)
@@ -146,11 +112,7 @@ func Do(c *lemon.CLI, args []string) int {
 			return lemon.RPCError
 		}
 
-		// creds, err := credentials.NewServerTLSFromFile(p.Name(), key)
 		serverCreds := credentials.NewTLS(&tls.Config{Certificates: []tls.Certificate{cert}})
-		// if err != nil {
-		// logger.Crit("Failed to setup TLS", err, nil)
-		// }
 
 		logger.Debug("Starting Server")
 

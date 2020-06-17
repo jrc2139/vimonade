@@ -81,22 +81,6 @@ func Serve(c *lemon.CLI, creds credentials.TransportCredentials, _logger log.Log
 		logger.Error("allowIp error")
 		return err
 	}
-	// flag.Parse()
-	// lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
-	// if err != nil {
-	// log.Fatalf("failed to listen: %v", err)
-	// }
-	// grpcServer := grpc.NewServer()
-	// pb.RegisterRouteGuideServer(grpcServer, &routeGuideServer{})
-	// ... // determine whether to use TLS
-	// grpcServer.Serve(lis)
-
-	// http.Handle("/copy", middleware(http.HandlerFunc(handleCopy)))
-	// http.Handle("/paste", middleware(http.HandlerFunc(handlePaste)))
-	// err = http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil)
-	// if err != nil {
-	// return err
-	// }
 
 	// Server
 	if err := grpc.RunServer(context.Background(), v1.NewMessageServerService(c.LineEnding, logger), creds, fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
