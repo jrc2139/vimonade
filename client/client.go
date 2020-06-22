@@ -14,6 +14,10 @@ import (
 	pb "github.com/jrc2139/vimonade/pkg/api/v1"
 )
 
+const (
+	timeOut = time.Second
+)
+
 type client struct {
 	host               string
 	port               int
@@ -36,7 +40,7 @@ func New(c *lemon.CLI, conn *grpc.ClientConn, logger log.Logger) *client {
 	}
 }
 
-func (c *client) copy(text string) error {
+func (c *client) copy(text string, cnx bool) error {
 	c.logger.Debug("Sending: " + text)
 
 	// not interested in copying blank and newlines
@@ -46,12 +50,14 @@ func (c *client) copy(text string) error {
 	case "\n":
 		return nil
 	default:
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-		defer cancel()
+		if cnx {
+			ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+			defer cancel()
 
-		_, err := c.grpcClient.Copy(ctx, &wrappers.StringValue{Value: text})
-		if err != nil {
-			c.logger.Debug(err.Error())
+			_, err := c.grpcClient.Copy(ctx, &wrappers.StringValue{Value: text})
+			if err != nil {
+				c.logger.Debug(err.Error())
+			}
 		}
 	}
 
@@ -62,7 +68,7 @@ func (c *client) copy(text string) error {
 	return nil
 }
 
-func (c *client) paste() (string, error) {
+func (c *client) paste(cnx bool) (string, error) {
 	c.logger.Debug("Receiving")
 
 	text, err := clipboard.ReadAll()
@@ -70,11 +76,13 @@ func (c *client) paste() (string, error) {
 		return "", err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	if cnx {
+		ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+		defer cancel()
 
-	if _, err := c.grpcClient.Paste(ctx, &wrappers.StringValue{Value: text}); err != nil {
-		c.logger.Debug(err.Error())
+		if _, err := c.grpcClient.Paste(ctx, &wrappers.StringValue{Value: text}); err != nil {
+			c.logger.Debug(err.Error())
+		}
 	}
 
 	return lemon.ConvertLineEnding(text, c.lineEnding), nil
@@ -85,15 +93,19 @@ func writeError(c *lemon.CLI, err error) {
 }
 
 func Copy(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
+	isConnected := true
+
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
 	if err != nil {
+		// don't return err if connection isn't made
 		logger.Debug(err.Error())
+		isConnected = false
 	}
 	defer conn.Close()
 
 	lc := New(c, conn, logger)
 
-	if err := lc.copy(c.DataSource); err != nil {
+	if err := lc.copy(c.DataSource, isConnected); err != nil {
 		logger.Crit("Failed to Copy", err, nil)
 		writeError(c, err)
 
@@ -104,10 +116,13 @@ func Copy(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
 }
 
 func Paste(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
+	isConnected := true
+
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
 	if err != nil {
 		// don't return err if connection isn't made
 		logger.Debug(err.Error())
+		isConnected = false
 	}
 	defer conn.Close()
 
@@ -115,7 +130,7 @@ func Paste(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
 
 	var text string
 
-	text, err = lc.paste()
+	text, err = lc.paste(isConnected)
 	if err != nil {
 		logger.Crit("Failed to Paste", err, nil)
 		writeError(c, err)
