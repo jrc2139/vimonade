@@ -33,7 +33,7 @@ install-secure:
 
 install-secure-remote:
 	make build-secure
-	./install-remote.sh
+	./install-remote.sh ${BIN}
 
 release:
 	mkdir ${INSECURE_DIR}/dist && mkdir ${INSECURE_DIR}/release_pkg
