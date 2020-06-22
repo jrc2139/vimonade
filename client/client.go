@@ -1,8 +1,12 @@
 package client
 
 import (
+	"bufio"
 	"context"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/atotto/clipboard"
@@ -10,33 +14,29 @@ import (
 	log "github.com/inconshreveable/log15"
 	"google.golang.org/grpc"
 
+	pb "github.com/jrc2139/vimonade/api"
 	"github.com/jrc2139/vimonade/lemon"
-	pb "github.com/jrc2139/vimonade/pkg/api/v1"
 )
 
 const (
-	timeOut = time.Second
+	timeOut = 5 * time.Second
 )
 
 type client struct {
-	host               string
-	port               int
-	addr               string
-	lineEnding         string
-	noFallbackMessages bool
-	logger             log.Logger
-	grpcClient         pb.MessageServiceClient
+	host       string
+	port       int
+	lineEnding string
+	logger     log.Logger
+	grpcClient pb.VimonadeServiceClient
 }
 
 func New(c *lemon.CLI, conn *grpc.ClientConn, logger log.Logger) *client {
 	return &client{
-		host:               c.Host,
-		port:               c.Port,
-		addr:               fmt.Sprintf("http://%s:%d", c.Host, c.Port),
-		lineEnding:         c.LineEnding,
-		noFallbackMessages: c.NoFallbackMessages,
-		logger:             logger,
-		grpcClient:         pb.NewMessageServiceClient(conn),
+		host:       c.Host,
+		port:       c.Port,
+		lineEnding: c.LineEnding,
+		logger:     logger,
+		grpcClient: pb.NewVimonadeServiceClient(conn),
 	}
 }
 
@@ -146,4 +146,94 @@ func Paste(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
 	}
 
 	return lemon.Success
+}
+
+func Send(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
+	if err != nil {
+		logger.Crit(err.Error())
+		return lemon.RPCError
+	}
+	defer conn.Close()
+
+	lc := New(c, conn, logger)
+
+	if err := lc.send(c.DataSource); err != nil {
+		logger.Crit("Failed to Copy", err, nil)
+		writeError(c, err)
+
+		return lemon.RPCError
+	}
+
+	return lemon.Success
+}
+
+func (c *client) send(path string) error {
+	c.logger.Debug("Sending " + path)
+
+	if path == "" {
+		return nil
+	}
+
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+	defer cancel()
+
+	stream, err := c.grpcClient.Send(ctx)
+	if err != nil {
+		c.logger.Crit("cannot send file", err)
+	}
+
+	req := &pb.SendFileRequest{
+		Data: &pb.SendFileRequest_Info{
+			Info: &pb.FileInfo{
+				Name:     filepath.Base(path),
+				FileType: filepath.Ext(path),
+			},
+		},
+	}
+
+	err = stream.Send(req)
+	if err != nil {
+		c.logger.Crit("cannot send image info to server: ", err, stream.RecvMsg(nil))
+	}
+
+	reader := bufio.NewReader(file)
+	buffer := make([]byte, 1024)
+
+	for {
+		n, err := reader.Read(buffer)
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			c.logger.Crit("cannot read chunk to buffer: ", err)
+		}
+
+		req := &pb.SendFileRequest{
+			Data: &pb.SendFileRequest_ChunkData{
+				ChunkData: buffer[:n],
+			},
+		}
+
+		err = stream.Send(req)
+		if err != nil {
+			c.logger.Crit("cannot send chunk to server: ", err, stream.RecvMsg(nil))
+		}
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		c.logger.Crit("cannot receive response: ", err)
+	}
+
+	c.logger.Debug(fmt.Sprintf("image sent with id: %s, size: %d", res.GetName(), res.GetSize()))
+
+	return nil
 }

@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/jrc2139/vimonade/client"
+	vc "github.com/jrc2139/vimonade/client"
 	"github.com/jrc2139/vimonade/lemon"
-	"github.com/jrc2139/vimonade/server"
+	vs "github.com/jrc2139/vimonade/server"
 )
 
 var logLevelMap = map[int]log.Lvl{
@@ -75,11 +75,15 @@ func Do(c *lemon.CLI, args []string) int {
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
-		return client.Copy(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
+		return vc.Copy(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
 
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
-		return client.Paste(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithInsecure(), grpc.WithBlock())
+		return vc.Paste(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
+
+	case lemon.SEND:
+		logger.Debug("Sending file")
+		return vc.Send(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
 
 	case lemon.SERVER:
 		serverKeyBytes, err := certBox.Bytes("service.key")
@@ -97,15 +101,10 @@ func Do(c *lemon.CLI, args []string) int {
 		serverCreds := credentials.NewTLS(&tls.Config{Certificates: []tls.Certificate{cert}})
 
 		logger.Debug("Starting Server")
+		return vs.Serve(c, serverCreds, logger)
 
-		if err := server.Serve(c, serverCreds, logger); err != nil {
-			logger.Crit("Server error", err, nil)
-			return lemon.RPCError
-		}
 	default:
 		logger.Crit("Vimonade error", err, nil)
 		return lemon.RPCError
 	}
-
-	return lemon.Success
 }

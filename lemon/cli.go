@@ -9,6 +9,7 @@ const (
 	COPY CommandType = iota + 1
 	PASTE
 	SERVER
+	SEND
 )
 
 const (
@@ -33,15 +34,12 @@ type CLI struct {
 	DataSource string
 
 	// options
-	Port           int
-	Allow          string
-	Host           string
-	TransLoopback  bool
-	TransLocalfile bool
-	LineEnding     string
-	LogLevel       int
+	Port        int
+	Allow       string
+	Host        string
+	LineEnding  string
+	VimonadeDir string
+	LogLevel    int
 
 	Help bool
-
-	NoFallbackMessages bool
 }
