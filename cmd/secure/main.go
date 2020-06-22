@@ -38,7 +38,7 @@ func Do(c *lemon.CLI, args []string) int {
 	logger.SetHandler(log.LvlFilterHandler(log.LvlError, log.StdoutHandler))
 
 	if err := c.FlagParse(args, false); err != nil {
-		writeError(c, err)
+		fmt.Fprintln(c.Err, err.Error())
 		return lemon.FlagParseError
 	}
 
@@ -72,38 +72,20 @@ func Do(c *lemon.CLI, args []string) int {
 
 	clientCreds := credentials.NewTLS(&tls.Config{ServerName: "", RootCAs: cp})
 
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), grpc.WithTransportCredentials(clientCreds))
-	if err != nil {
-		logger.Debug(err.Error())
-	}
-	defer conn.Close()
-
-	lc := client.New(c, conn, logger)
-
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
+		return client.Copy(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
 
-		if err := lc.Copy(c.DataSource); err != nil {
-			logger.Crit("Failed to Copy", err, nil)
-		}
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
+		return client.Paste(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithInsecure(), grpc.WithBlock())
 
-		var text string
-
-		text, err := lc.Paste()
-		if err != nil {
-			logger.Crit("Failed to Paste", err, nil)
-		}
-
-		if _, err := c.Out.Write([]byte(text)); err != nil {
-			logger.Crit("Failed to output Paste to stdin", err, nil)
-		}
 	case lemon.SERVER:
 		serverKeyBytes, err := certBox.Bytes("service.key")
 		if err != nil {
-			panic(err)
+			logger.Crit("Failed to create server key pair", nil, err)
+			return lemon.RPCError
 		}
 
 		cert, err := tls.X509KeyPair(serverPemBytes, serverKeyBytes)
@@ -121,18 +103,9 @@ func Do(c *lemon.CLI, args []string) int {
 			return lemon.RPCError
 		}
 	default:
-		panic("Unreachable code")
-	}
-
-	if err != nil {
-		writeError(c, err)
 		logger.Crit("Vimonade error", err, nil)
 		return lemon.RPCError
 	}
 
 	return lemon.Success
-}
-
-func writeError(c *lemon.CLI, err error) {
-	fmt.Fprintln(c.Err, err.Error())
 }

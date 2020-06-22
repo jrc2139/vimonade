@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/atotto/clipboard"
 	"github.com/golang/protobuf/ptypes/wrappers"
@@ -35,9 +36,7 @@ func New(c *lemon.CLI, conn *grpc.ClientConn, logger log.Logger) *client {
 	}
 }
 
-const MSGPACK = "application/x-msgpack"
-
-func (c *client) Copy(text string) error {
+func (c *client) copy(text string) error {
 	c.logger.Debug("Sending: " + text)
 
 	// not interested in copying blank and newlines
@@ -47,7 +46,10 @@ func (c *client) Copy(text string) error {
 	case "\n":
 		return nil
 	default:
-		_, err := c.grpcClient.Copy(context.Background(), &wrappers.StringValue{Value: text})
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+
+		_, err := c.grpcClient.Copy(ctx, &wrappers.StringValue{Value: text})
 		if err != nil {
 			c.logger.Debug(err.Error())
 		}
@@ -60,7 +62,7 @@ func (c *client) Copy(text string) error {
 	return nil
 }
 
-func (c *client) Paste() (string, error) {
+func (c *client) paste() (string, error) {
 	c.logger.Debug("Receiving")
 
 	text, err := clipboard.ReadAll()
@@ -68,9 +70,65 @@ func (c *client) Paste() (string, error) {
 		return "", err
 	}
 
-	if _, err := c.grpcClient.Paste(context.Background(), &wrappers.StringValue{Value: text}); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	if _, err := c.grpcClient.Paste(ctx, &wrappers.StringValue{Value: text}); err != nil {
 		c.logger.Debug(err.Error())
 	}
 
 	return lemon.ConvertLineEnding(text, c.lineEnding), nil
+}
+
+func writeError(c *lemon.CLI, err error) {
+	fmt.Fprintln(c.Err, err.Error())
+}
+
+func Copy(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
+	if err != nil {
+		logger.Debug(err.Error())
+	}
+	defer conn.Close()
+
+	lc := New(c, conn, logger)
+
+	if err := lc.copy(c.DataSource); err != nil {
+		logger.Crit("Failed to Copy", err, nil)
+		writeError(c, err)
+
+		return lemon.RPCError
+	}
+
+	return lemon.Success
+}
+
+func Paste(c *lemon.CLI, logger log.Logger, opts ...grpc.DialOption) int {
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
+	if err != nil {
+		// don't return err if connection isn't made
+		logger.Debug(err.Error())
+	}
+	defer conn.Close()
+
+	lc := New(c, conn, logger)
+
+	var text string
+
+	text, err = lc.paste()
+	if err != nil {
+		logger.Crit("Failed to Paste", err, nil)
+		writeError(c, err)
+
+		return lemon.RPCError
+	}
+
+	if _, err := c.Out.Write([]byte(text)); err != nil {
+		logger.Crit("Failed to output Paste to stdin", err, nil)
+		writeError(c, err)
+
+		return lemon.RPCError
+	}
+
+	return lemon.Success
 }
