@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"errors"
 
 	"github.com/atotto/clipboard"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -25,6 +26,10 @@ func NewMessageServerService(lineEnding string, logger log.Logger) v1.MessageSer
 }
 
 func (s *messageServiceServer) Copy(ctx context.Context, message *wrappers.StringValue) (*empty.Empty, error) {
+	if errors.Is(ctx.Err(), context.Canceled) {
+		return &empty.Empty{}, ctx.Err()
+	}
+
 	if message != nil {
 		s.logger.Debug("Copy requested: message=%v", message)
 
@@ -40,6 +45,10 @@ func (s *messageServiceServer) Copy(ctx context.Context, message *wrappers.Strin
 }
 
 func (s *messageServiceServer) Paste(ctx context.Context, message *wrappers.StringValue) (*wrappers.StringValue, error) {
+	if errors.Is(ctx.Err(), context.Canceled) {
+		return &wrappers.StringValue{Value: ""}, ctx.Err()
+	}
+
 	if message != nil {
 		s.logger.Debug("Paste requested: message=%v", message)
 
