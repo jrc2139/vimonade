@@ -1,5 +1,5 @@
 VERSION=$(shell git describe --tags)
-INSECURE_DIR="./cmd/insecure"
+INSECURE_DIR="./cmd/vimonade"
 SECURE_DIR="./cmd/secure"
 BIN="vimonade"
 
