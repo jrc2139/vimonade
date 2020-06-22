@@ -16,8 +16,6 @@ import (
 	v1 "github.com/jrc2139/vimonade/pkg/service/v1"
 )
 
-const MSGPACK = "application/x-msgpack"
-
 var logger log.Logger
 var lineEnding string
 var ra *iprange.Range
