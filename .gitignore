@@ -26,5 +26,6 @@ service.csr
 service.pem
 ca-org.cert
 ca-vault.cert
+rice-box.go
 
 vimonade
