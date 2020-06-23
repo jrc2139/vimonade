@@ -16,7 +16,7 @@ build:
 
 install:
 	make build
-	mv ${BIN} ${GOBIN_DIR}
+	mv ${BIN} ${GOPATH}/bin
 
 install-remote:
 	make build-insecure

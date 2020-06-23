@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package vimonade;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+service VimonadeService {
+  rpc Copy(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
+  rpc Paste(google.protobuf.StringValue) returns (google.protobuf.StringValue) {}
+  rpc Send(stream SendFileRequest) returns (SendFileResponse) {};
+}
+
+message SendFileRequest {
+  oneof data {
+    FileInfo info = 1;
+    bytes chunk_data = 2;
+  };
+}
+
+message SendFileResponse {
+  string name = 1;
+  uint32 size = 2;
+}
+
+message FileInfo {
+  string name = 1;
+  string file_type = 2;
+}

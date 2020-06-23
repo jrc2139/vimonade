@@ -4,26 +4,69 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 
-	log "github.com/inconshreveable/log15"
 	"github.com/pocke/go-iprange"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"
 
+	pb "github.com/jrc2139/vimonade/api"
 	"github.com/jrc2139/vimonade/lemon"
-	v1 "github.com/jrc2139/vimonade/pkg/api/v1"
-	service "github.com/jrc2139/vimonade/pkg/service/v1"
+	"github.com/jrc2139/vimonade/service"
 )
 
-func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger log.Logger) error {
-	listen, err := net.Listen("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port))
+func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger *zap.Logger) int {
+	// create vimonade dir if !exist
+	var vimonadeDir string
+
+	if c.VimonadeDir == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			logger.Error("Cannot find $HOME error: " + err.Error())
+			return lemon.RPCError
+		}
+
+		vimonadeDir = home + "/.vimonade/files"
+	} else {
+		vimonadeDir = c.VimonadeDir
+	}
+
+	logger.Debug("current vimonade dir: " + vimonadeDir)
+
+	if _, err := os.Stat(vimonadeDir); os.IsNotExist(err) {
+		err = os.MkdirAll(vimonadeDir, 0755)
+		if err != nil {
+			logger.Error("Creating vimonade dir error: " + err.Error())
+			return lemon.RPCError
+		}
+	}
+
+	// Server
+	store := service.NewDiskFileStore(vimonadeDir)
+
+	if err := runServer(context.Background(),
+		service.NewVimonadeServerService(store, c.LineEnding, logger),
+		logger, creds, c.Allow, fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
+		logger.Error("Server error: " + err.Error())
+		fmt.Fprintln(c.Err, err.Error())
+
+		return lemon.RPCError
+	}
+
+	return lemon.RPCError
+}
+
+// runServer registers gRPC service and run server.
+func runServer(ctx context.Context, srv pb.VimonadeServiceServer, logger *zap.Logger, creds credentials.TransportCredentials, allowRange, serverAddr string) error {
+	listen, err := net.Listen("tcp", serverAddr)
 	if err != nil {
 		return err
 	}
 
-	ra, err := iprange.New(c.Allow)
+	ra, err := iprange.New(allowRange)
 	if err != nil {
 		return err
 	}
@@ -34,7 +77,7 @@ func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger log.Logg
 	ipInterceptor := func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		p, ok := peer.FromContext(ctx)
 		if !ok {
-			logger.Crit("error fetching ip addr from request", nil)
+			logger.Error("error fetching ip addr from request")
 			return nil, fmt.Errorf("error fetching ip addr from request")
 		}
 
@@ -42,8 +85,8 @@ func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger log.Logg
 		ip := strings.Split(ipAndPort, ":")
 
 		if !ra.IncludeStr(ip[0]) {
-			logger.Crit("not in allow ip range", ip[0], ra)
-			return nil, fmt.Errorf("not in allow ip range", ip[0])
+			logger.Error(fmt.Sprintf("not in allow ip range: %s | %s", ip[0], ra))
+			return nil, fmt.Errorf("not in allow ip range: %s", ip[0])
 		}
 
 		// Calls the handler
@@ -58,12 +101,10 @@ func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger log.Logg
 		server = grpc.NewServer(grpc.Creds(creds), grpc.UnaryInterceptor(ipInterceptor))
 	}
 
-	srv := service.NewMessageServerService(c.LineEnding, logger)
-
-	v1.RegisterMessageServiceServer(server, srv)
+	pb.RegisterVimonadeServiceServer(server, srv)
 
 	// start gRPC server
-	logger.Debug("starting gRPC server...")
+	logger.Info("starting gRPC server on " + serverAddr)
 
 	return server.Serve(listen)
 }

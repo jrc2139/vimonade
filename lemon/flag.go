@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-
-	"github.com/mitchellh/go-homedir"
-	"github.com/monochromegane/conflag"
 )
 
 func (c *CLI) FlagParse(args []string, skip bool) error {
@@ -49,6 +46,10 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 			c.Type = COPY
 			del(i)
 			return
+		case "send":
+			c.Type = SEND
+			del(i)
+			return
 		case "server":
 			c.Type = SERVER
 			del(i)
@@ -66,7 +67,7 @@ func (c *CLI) flags() *flag.FlagSet {
 	flags.StringVar(&c.Host, "host", "localhost", "Destination host name.")
 	flags.BoolVar(&c.Help, "help", false, "Show this message")
 	flags.StringVar(&c.LineEnding, "line-ending", "", "Convert Line Endings (CR/CRLF)")
-	flags.BoolVar(&c.NoFallbackMessages, "no-fallback-messages", false, "Do not show fallback messages")
+	flags.StringVar(&c.VimonadeDir, "vimonade-dir", "", "directory for storing files from remote client")
 	flags.IntVar(&c.LogLevel, "log-level", 1, "Log level")
 	return flags
 }
@@ -74,18 +75,11 @@ func (c *CLI) flags() *flag.FlagSet {
 func (c *CLI) parse(args []string, skip bool) error {
 	flags := c.flags()
 
-	confPath, err := homedir.Expand("~/.config/vimonade.toml")
-	if err == nil && !skip {
-		if confArgs, err := conflag.ArgsFrom(confPath); err == nil {
-			flags.Parse(confArgs)
-		}
-	}
-
 	var arg string
-	err = flags.Parse(args[1:])
-	if err != nil {
+	if err := flags.Parse(args[1:]); err != nil {
 		return err
 	}
+
 	if c.Type == PASTE || c.Type == SERVER {
 		return nil
 	}
