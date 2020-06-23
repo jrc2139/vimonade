@@ -36,17 +36,17 @@ install-secure-remote:
 	./install-remote.sh
 
 release:
-	mkdir ${INSECURE_DIR}/dist && mkdir ${INSECURE_DIR}/release_pkg
+	mkdir ${INSECURE_DIR}/dist && mkdir ${INSECURE_DIR}/pkg
 	cd ${INSECURE_DIR} && gox --arch 'amd64 386' --os 'windows linux darwin' --output "../../dist/${BIN}_{{.OS}}_{{.Arch}}/${BIN}" -ldflags "-s -w -X github.com/jrc2139/vimonade/lemon.Version=$(VERSION)"
-	zip      release_pkg/${BIN}_windows_386.zip     dist/${BIN}_windows_386/${BIN}.exe   -j
-	zip      release_pkg/${BIN}_windows_amd64.zip   dist/${BIN}_windows_amd64/${BIN}.exe -j
-	tar zcvf release_pkg/${BIN}_linux_386.tar.gz    -C dist/${BIN}_linux_386/ 		 ${BIN}
-	tar zcvf release_pkg/${BIN}_linux_amd64.tar.gz  -C dist/${BIN}_linux_amd64/ 	 ${BIN}
-	tar zcvf release_pkg/${BIN}_darwin_386.tar.gz   -C dist/${BIN}_darwin_386/ 		 ${BIN}
-	tar zcvf release_pkg/${BIN}_darwin_amd64.tar.gz -C dist/${BIN}_darwin_amd64/ 	 ${BIN}
+	zip      pkg/${BIN}_windows_386.zip     dist/${BIN}_windows_386/${BIN}.exe   -j
+	zip      pkg/${BIN}_windows_amd64.zip   dist/${BIN}_windows_amd64/${BIN}.exe -j
+	tar zcvf pkg/${BIN}_linux_386.tar.gz    -C dist/${BIN}_linux_386/ 		 ${BIN}
+	tar zcvf pkg/${BIN}_linux_amd64.tar.gz  -C dist/${BIN}_linux_amd64/ 	 ${BIN}
+	tar zcvf pkg/${BIN}_darwin_386.tar.gz   -C dist/${BIN}_darwin_386/ 		 ${BIN}
+	tar zcvf pkg/${BIN}_darwin_amd64.tar.gz -C dist/${BIN}_darwin_amd64/ 	 ${BIN}
 
 clean:
 	rm -rf dist/
-	rm -f release_pkg/*.tar.gz release_pkg/*.zip
+	rm -f pkg/*.tar.gz pkg/*.zip
 	rm -rf ${INSECURE_DIR}/dist/
-	rm -rf ${INSECURE_DIR}/release_pkg/
+	rm -rf ${INSECURE_DIR}/pkg/
