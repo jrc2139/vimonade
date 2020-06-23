@@ -11,7 +11,8 @@ var Usage = fmt.Sprintf(`Usage: vimonade [options]... SUB_COMMAND [arg]
 Sub Commands:
   copy [text]                 Copy text.
   paste                       Paste text.
-  send 						  Send file back to host vimonade server.
+  send                        Send file back to host vimonade server.
+  sync                        Sync files with host vimonade server.
   server                      Start vimonade server.
 
 Options:

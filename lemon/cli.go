@@ -10,6 +10,7 @@ const (
 	PASTE
 	SERVER
 	SEND
+	SYNC
 )
 
 const (

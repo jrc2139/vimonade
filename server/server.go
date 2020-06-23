@@ -49,7 +49,7 @@ func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger *zap.Log
 	store := service.NewDiskFileStore(vimonadeDir)
 
 	if err := runServer(context.Background(),
-		service.NewVimonadeServerService(store, c.LineEnding, logger),
+		service.NewVimonadeServerService(store, vimonadeDir, c.LineEnding, logger),
 		logger, creds, c.Allow, fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
 		logger.Error("Server error: " + err.Error())
 

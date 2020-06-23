@@ -1,10 +1,13 @@
 package service
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 
 	"github.com/atotto/clipboard"
 	"go.uber.org/zap"
@@ -21,15 +24,21 @@ const (
 // VimonadeServer is implementation of pb.VimonadeServer proto interface.
 type vimonadeServiceServer struct {
 	// localStore LocalStore
-	fileStore  FileStore
-	lineEnding string
+	fileStore   FileStore
+	lineEnding  string
+	vimonadeDir string
 	// path       string
 	logger *zap.Logger
 }
 
 // NewVimonadeServerService creates Audio service object.
-func NewVimonadeServerService(fileStore FileStore, lineEnding string, logger *zap.Logger) pb.VimonadeServiceServer {
-	return &vimonadeServiceServer{fileStore: fileStore, lineEnding: lineEnding, logger: logger}
+func NewVimonadeServerService(fileStore FileStore, vimonadeDir, lineEnding string, logger *zap.Logger) pb.VimonadeServiceServer {
+	return &vimonadeServiceServer{
+		fileStore:   fileStore,
+		vimonadeDir: vimonadeDir,
+		lineEnding:  lineEnding,
+		logger:      logger,
+	}
 }
 
 func (s *vimonadeServiceServer) Send(stream pb.VimonadeService_SendServer) error {
@@ -145,6 +154,121 @@ func logError(err error) error {
 	}
 
 	return err
+}
+
+func (s *vimonadeServiceServer) Sync(req *pb.SyncFileRequest, stream pb.VimonadeService_SyncServer) error {
+	name := req.GetName()
+	if name == "" {
+		return nil
+	}
+
+	path := s.vimonadeDir + "/" + name
+
+	s.logger.Info("receive an sync-file request for " + path)
+
+	// don't continue if file doesn't exist
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return nil
+	}
+
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	resp := &pb.SyncFileResponse{
+		Data: &pb.SyncFileResponse_Info{
+			Info: &pb.FileInfo{
+				Name:     path,
+				FileType: filepath.Ext(path),
+			},
+		},
+	}
+
+	if err := stream.Send(resp); err != nil {
+		return err
+	}
+
+	reader := bufio.NewReader(file)
+	buffer := make([]byte, 1024)
+
+	for {
+		err := s.contextError(stream.Context())
+		if err != nil {
+			return err
+		}
+
+		n, err := reader.Read(buffer)
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return err
+		}
+
+		req := &pb.SyncFileResponse{
+			Data: &pb.SyncFileResponse_ChunkData{
+				ChunkData: buffer[:n],
+			},
+		}
+
+		err = stream.Send(req)
+		if err != nil {
+			return err
+		}
+	}
+
+	s.logger.Debug(fmt.Sprintf("file synced: %s", path))
+
+	return nil
+}
+
+func (s *vimonadeServiceServer) MakeDir(stream pb.VimonadeService_MakeDirServer) error {
+	for {
+		err := s.contextError(stream.Context())
+		if err != nil {
+			return err
+		}
+
+		req, err := stream.Recv()
+		if err == io.EOF {
+			s.logger.Debug("makedir stream ended")
+			break
+		}
+		if err != nil {
+			return logError(status.Errorf(codes.Unknown, "cannot receive stream request: %v", err))
+		}
+
+		if err := s.createDir(req.GetName()); err != nil {
+			s.logger.Error(fmt.Sprintf("error creating dir %s: %s", req.GetName(), err))
+
+			return logError(status.Errorf(codes.Unknown, "error creating dir: %v", err))
+		}
+
+		res := &pb.DirResponse{}
+
+		err = stream.Send(res)
+		if err != nil {
+			return logError(status.Errorf(codes.Unknown, "cannot send stream response: %v", err))
+		}
+	}
+
+	return nil
+}
+
+func (s *vimonadeServiceServer) createDir(name string) error {
+	path := s.vimonadeDir + "/" + name
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err = os.MkdirAll(path, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *vimonadeServiceServer) contextError(ctx context.Context) error {

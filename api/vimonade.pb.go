@@ -164,6 +164,195 @@ func (m *PasteResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PasteResponse proto.InternalMessageInfo
 
+type DirRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DirRequest) Reset()         { *m = DirRequest{} }
+func (m *DirRequest) String() string { return proto.CompactTextString(m) }
+func (*DirRequest) ProtoMessage()    {}
+func (*DirRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{4}
+}
+
+func (m *DirRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DirRequest.Unmarshal(m, b)
+}
+func (m *DirRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DirRequest.Marshal(b, m, deterministic)
+}
+func (m *DirRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DirRequest.Merge(m, src)
+}
+func (m *DirRequest) XXX_Size() int {
+	return xxx_messageInfo_DirRequest.Size(m)
+}
+func (m *DirRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DirRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DirRequest proto.InternalMessageInfo
+
+func (m *DirRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type DirResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DirResponse) Reset()         { *m = DirResponse{} }
+func (m *DirResponse) String() string { return proto.CompactTextString(m) }
+func (*DirResponse) ProtoMessage()    {}
+func (*DirResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{5}
+}
+
+func (m *DirResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DirResponse.Unmarshal(m, b)
+}
+func (m *DirResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DirResponse.Marshal(b, m, deterministic)
+}
+func (m *DirResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DirResponse.Merge(m, src)
+}
+func (m *DirResponse) XXX_Size() int {
+	return xxx_messageInfo_DirResponse.Size(m)
+}
+func (m *DirResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DirResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DirResponse proto.InternalMessageInfo
+
+type SyncFileRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SyncFileRequest) Reset()         { *m = SyncFileRequest{} }
+func (m *SyncFileRequest) String() string { return proto.CompactTextString(m) }
+func (*SyncFileRequest) ProtoMessage()    {}
+func (*SyncFileRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{6}
+}
+
+func (m *SyncFileRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SyncFileRequest.Unmarshal(m, b)
+}
+func (m *SyncFileRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SyncFileRequest.Marshal(b, m, deterministic)
+}
+func (m *SyncFileRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SyncFileRequest.Merge(m, src)
+}
+func (m *SyncFileRequest) XXX_Size() int {
+	return xxx_messageInfo_SyncFileRequest.Size(m)
+}
+func (m *SyncFileRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SyncFileRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SyncFileRequest proto.InternalMessageInfo
+
+func (m *SyncFileRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type SyncFileResponse struct {
+	// Types that are valid to be assigned to Data:
+	//	*SyncFileResponse_Info
+	//	*SyncFileResponse_ChunkData
+	Data                 isSyncFileResponse_Data `protobuf_oneof:"data"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
+}
+
+func (m *SyncFileResponse) Reset()         { *m = SyncFileResponse{} }
+func (m *SyncFileResponse) String() string { return proto.CompactTextString(m) }
+func (*SyncFileResponse) ProtoMessage()    {}
+func (*SyncFileResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{7}
+}
+
+func (m *SyncFileResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SyncFileResponse.Unmarshal(m, b)
+}
+func (m *SyncFileResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SyncFileResponse.Marshal(b, m, deterministic)
+}
+func (m *SyncFileResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SyncFileResponse.Merge(m, src)
+}
+func (m *SyncFileResponse) XXX_Size() int {
+	return xxx_messageInfo_SyncFileResponse.Size(m)
+}
+func (m *SyncFileResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SyncFileResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SyncFileResponse proto.InternalMessageInfo
+
+type isSyncFileResponse_Data interface {
+	isSyncFileResponse_Data()
+}
+
+type SyncFileResponse_Info struct {
+	Info *FileInfo `protobuf:"bytes,1,opt,name=info,proto3,oneof"`
+}
+
+type SyncFileResponse_ChunkData struct {
+	ChunkData []byte `protobuf:"bytes,2,opt,name=chunk_data,json=chunkData,proto3,oneof"`
+}
+
+func (*SyncFileResponse_Info) isSyncFileResponse_Data() {}
+
+func (*SyncFileResponse_ChunkData) isSyncFileResponse_Data() {}
+
+func (m *SyncFileResponse) GetData() isSyncFileResponse_Data {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+func (m *SyncFileResponse) GetInfo() *FileInfo {
+	if x, ok := m.GetData().(*SyncFileResponse_Info); ok {
+		return x.Info
+	}
+	return nil
+}
+
+func (m *SyncFileResponse) GetChunkData() []byte {
+	if x, ok := m.GetData().(*SyncFileResponse_ChunkData); ok {
+		return x.ChunkData
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*SyncFileResponse) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*SyncFileResponse_Info)(nil),
+		(*SyncFileResponse_ChunkData)(nil),
+	}
+}
+
 type SendFileRequest struct {
 	// Types that are valid to be assigned to Data:
 	//	*SendFileRequest_Info
@@ -178,7 +367,7 @@ func (m *SendFileRequest) Reset()         { *m = SendFileRequest{} }
 func (m *SendFileRequest) String() string { return proto.CompactTextString(m) }
 func (*SendFileRequest) ProtoMessage()    {}
 func (*SendFileRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4d1d9016bdda1f4a, []int{4}
+	return fileDescriptor_4d1d9016bdda1f4a, []int{8}
 }
 
 func (m *SendFileRequest) XXX_Unmarshal(b []byte) error {
@@ -256,7 +445,7 @@ func (m *SendFileResponse) Reset()         { *m = SendFileResponse{} }
 func (m *SendFileResponse) String() string { return proto.CompactTextString(m) }
 func (*SendFileResponse) ProtoMessage()    {}
 func (*SendFileResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4d1d9016bdda1f4a, []int{5}
+	return fileDescriptor_4d1d9016bdda1f4a, []int{9}
 }
 
 func (m *SendFileResponse) XXX_Unmarshal(b []byte) error {
@@ -303,7 +492,7 @@ func (m *FileInfo) Reset()         { *m = FileInfo{} }
 func (m *FileInfo) String() string { return proto.CompactTextString(m) }
 func (*FileInfo) ProtoMessage()    {}
 func (*FileInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4d1d9016bdda1f4a, []int{6}
+	return fileDescriptor_4d1d9016bdda1f4a, []int{10}
 }
 
 func (m *FileInfo) XXX_Unmarshal(b []byte) error {
@@ -343,6 +532,10 @@ func init() {
 	proto.RegisterType((*CopyResponse)(nil), "vimonade.CopyResponse")
 	proto.RegisterType((*PasteRequest)(nil), "vimonade.PasteRequest")
 	proto.RegisterType((*PasteResponse)(nil), "vimonade.PasteResponse")
+	proto.RegisterType((*DirRequest)(nil), "vimonade.DirRequest")
+	proto.RegisterType((*DirResponse)(nil), "vimonade.DirResponse")
+	proto.RegisterType((*SyncFileRequest)(nil), "vimonade.SyncFileRequest")
+	proto.RegisterType((*SyncFileResponse)(nil), "vimonade.SyncFileResponse")
 	proto.RegisterType((*SendFileRequest)(nil), "vimonade.SendFileRequest")
 	proto.RegisterType((*SendFileResponse)(nil), "vimonade.SendFileResponse")
 	proto.RegisterType((*FileInfo)(nil), "vimonade.FileInfo")
@@ -353,27 +546,32 @@ func init() {
 }
 
 var fileDescriptor_4d1d9016bdda1f4a = []byte{
-	// 313 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xcb, 0x4f, 0xc2, 0x40,
-	0x10, 0xc6, 0xa9, 0x29, 0x84, 0x0e, 0x2f, 0xb3, 0xf1, 0x81, 0xf5, 0x20, 0xa9, 0x1e, 0x7a, 0xe2,
-	0x80, 0x07, 0x13, 0x3c, 0xf9, 0x88, 0xc1, 0x9b, 0x59, 0x8c, 0x57, 0xb2, 0xd2, 0x21, 0x6e, 0x84,
-	0xdd, 0x4a, 0xb7, 0x4d, 0xea, 0x7f, 0xe8, 0x7f, 0x65, 0x76, 0xfb, 0x0c, 0x12, 0x6f, 0x3b, 0xdf,
-	0x7c, 0xdf, 0xcc, 0xf4, 0x97, 0x42, 0x3f, 0xe1, 0x1b, 0x29, 0x58, 0x80, 0xe3, 0x70, 0x2b, 0x95,
-	0x24, 0xed, 0xa2, 0xf6, 0x2e, 0xa1, 0xf3, 0x20, 0xc3, 0x94, 0xe2, 0x57, 0x8c, 0x91, 0x22, 0x47,
-	0xd0, 0x4c, 0xd8, 0x3a, 0xc6, 0xa1, 0x35, 0xb2, 0x7c, 0x87, 0x66, 0x85, 0xd7, 0x87, 0x6e, 0x66,
-	0x8a, 0x42, 0x29, 0x22, 0xf4, 0xae, 0xa0, 0xfb, 0xc2, 0x22, 0x85, 0xff, 0xa7, 0x06, 0xd0, 0xcb,
-	0x5d, 0x79, 0x2c, 0x80, 0xc1, 0x1c, 0x45, 0xf0, 0xc4, 0xd7, 0x65, 0xd2, 0x07, 0x9b, 0x8b, 0x95,
-	0x34, 0xc1, 0xce, 0x84, 0x8c, 0xcb, 0x3b, 0xb5, 0xe9, 0x59, 0xac, 0xe4, 0xac, 0x41, 0x8d, 0x83,
-	0x5c, 0x00, 0x2c, 0x3f, 0x62, 0xf1, 0xb9, 0x08, 0x98, 0x62, 0xc3, 0x83, 0x91, 0xe5, 0x77, 0x67,
-	0x0d, 0xea, 0x18, 0xed, 0x91, 0x29, 0x76, 0xdf, 0x02, 0x5b, 0xb7, 0xbc, 0x29, 0x1c, 0x56, 0x5b,
-	0xb2, 0xcd, 0x84, 0x80, 0x2d, 0xd8, 0xa6, 0xb8, 0xcf, 0xbc, 0xb5, 0x16, 0xf1, 0x6f, 0x34, 0xa3,
-	0x7a, 0xd4, 0xbc, 0xbd, 0x5b, 0x68, 0x17, 0x8b, 0xf7, 0x66, 0xce, 0xc1, 0x59, 0xf1, 0x35, 0x2e,
-	0x54, 0x1a, 0x66, 0x41, 0x87, 0xb6, 0xb5, 0xf0, 0x9a, 0x86, 0x38, 0xf9, 0xb1, 0x60, 0xf0, 0x96,
-	0xdf, 0x3f, 0xc7, 0x6d, 0xc2, 0x97, 0x48, 0x6e, 0xc0, 0xd6, 0xe4, 0xc8, 0x71, 0xf5, 0x65, 0x35,
-	0xdc, 0xee, 0xc9, 0xae, 0x9c, 0x93, 0x6a, 0x90, 0x29, 0x34, 0x0d, 0x3c, 0x52, 0xb3, 0xd4, 0x99,
-	0xbb, 0xa7, 0x7f, 0xf4, 0x32, 0x7b, 0x07, 0xb6, 0x26, 0x40, 0xce, 0x2a, 0xcb, 0x0e, 0x77, 0xd7,
-	0xdd, 0xd7, 0x2a, 0x06, 0xf8, 0xd6, 0x7b, 0xcb, 0xfc, 0x27, 0xd7, 0xbf, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0x8a, 0xa2, 0x5c, 0xa7, 0x39, 0x02, 0x00, 0x00,
+	// 390 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x93, 0xcf, 0x6f, 0xa2, 0x40,
+	0x14, 0xc7, 0xc1, 0xa0, 0x2b, 0xcf, 0x1f, 0x98, 0x89, 0xee, 0xba, 0xec, 0x61, 0x0d, 0xbb, 0x4d,
+	0x38, 0x19, 0x63, 0x0f, 0x4d, 0x6c, 0x2f, 0x6d, 0x4d, 0x63, 0x0f, 0x4d, 0x1a, 0x6c, 0x7a, 0x35,
+	0x53, 0x78, 0xa6, 0x13, 0x75, 0xa0, 0x80, 0x26, 0xf4, 0x4f, 0xec, 0x5f, 0xd5, 0x30, 0x80, 0x20,
+	0x35, 0xde, 0x7a, 0x63, 0xbe, 0xf3, 0xfd, 0xbc, 0x37, 0xef, 0x07, 0xd0, 0xde, 0xb1, 0x8d, 0xcb,
+	0xa9, 0x83, 0x43, 0xcf, 0x77, 0x43, 0x97, 0xd4, 0xb3, 0xb3, 0xf1, 0x0f, 0x1a, 0xb7, 0xae, 0x17,
+	0x59, 0xf8, 0xb6, 0xc5, 0x20, 0x24, 0x5d, 0xa8, 0xee, 0xe8, 0x7a, 0x8b, 0x7d, 0x79, 0x20, 0x9b,
+	0xaa, 0x95, 0x1c, 0x8c, 0x36, 0x34, 0x13, 0x53, 0xe0, 0xb9, 0x3c, 0x40, 0xe3, 0x3f, 0x34, 0x1f,
+	0x69, 0x10, 0xe2, 0x69, 0x4a, 0x83, 0x56, 0xea, 0x4a, 0xb1, 0x01, 0xc0, 0x94, 0xf9, 0x19, 0x44,
+	0x40, 0xe1, 0x74, 0x93, 0x31, 0xe2, 0xdb, 0x68, 0x41, 0x43, 0x38, 0x52, 0xe0, 0x0c, 0xb4, 0x79,
+	0xc4, 0xed, 0x3b, 0xb6, 0xc6, 0x53, 0x14, 0x42, 0x27, 0xb7, 0x25, 0x28, 0x31, 0x41, 0x61, 0x7c,
+	0xe9, 0x0a, 0x5f, 0x63, 0x4c, 0x86, 0xfb, 0x06, 0xc4, 0xae, 0x7b, 0xbe, 0x74, 0x67, 0x92, 0x25,
+	0x1c, 0xe4, 0x2f, 0x80, 0xfd, 0xba, 0xe5, 0xab, 0x85, 0x43, 0x43, 0xda, 0xaf, 0x0c, 0x64, 0xb3,
+	0x39, 0x93, 0x2c, 0x55, 0x68, 0x53, 0x1a, 0xd2, 0x9b, 0x1a, 0x28, 0xf1, 0x95, 0xe1, 0x80, 0x36,
+	0x47, 0xee, 0x14, 0x5f, 0xf3, 0x0d, 0x59, 0x26, 0xd0, 0xc9, 0xb3, 0xa4, 0xc5, 0x1c, 0x29, 0x3a,
+	0xd6, 0x02, 0xf6, 0x8e, 0x22, 0x54, 0xcb, 0x12, 0xdf, 0xc6, 0x25, 0xd4, 0xb3, 0xc4, 0x47, 0x99,
+	0x3f, 0xa0, 0x2e, 0xd9, 0x1a, 0x17, 0x61, 0xe4, 0x25, 0xa0, 0x6a, 0xd5, 0x63, 0xe1, 0x29, 0xf2,
+	0x70, 0xfc, 0x51, 0x01, 0xed, 0x39, 0x7d, 0xff, 0x1c, 0xfd, 0x1d, 0xb3, 0x91, 0x5c, 0x80, 0x12,
+	0x0f, 0x9e, 0xf4, 0xf2, 0xca, 0x0a, 0xdb, 0xa2, 0xff, 0x2c, 0xcb, 0xe9, 0xdc, 0x24, 0x32, 0x81,
+	0xaa, 0x98, 0x3d, 0x29, 0x58, 0x8a, 0x2b, 0xa3, 0xff, 0xfa, 0xa2, 0xef, 0xd9, 0x6b, 0x50, 0xe2,
+	0x0e, 0x90, 0xdf, 0xb9, 0xa5, 0xd4, 0x77, 0x5d, 0x3f, 0x76, 0x95, 0x05, 0x30, 0x65, 0x11, 0x22,
+	0xe2, 0xf6, 0x41, 0x88, 0xc3, 0x45, 0x3a, 0x08, 0x51, 0x5a, 0x1e, 0x43, 0x1a, 0xc9, 0xe4, 0x0a,
+	0x7e, 0x3c, 0xd0, 0x15, 0x4e, 0x99, 0x4f, 0xba, 0xb9, 0x35, 0xdf, 0x5f, 0xbd, 0x57, 0x52, 0xf3,
+	0xf4, 0x23, 0xf9, 0xa5, 0x26, 0xfe, 0xb3, 0xf3, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x5e, 0x78,
+	0xd0, 0x48, 0x79, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -391,6 +589,8 @@ type VimonadeServiceClient interface {
 	Copy(ctx context.Context, in *CopyRequest, opts ...grpc.CallOption) (*CopyResponse, error)
 	Paste(ctx context.Context, in *PasteRequest, opts ...grpc.CallOption) (*PasteResponse, error)
 	Send(ctx context.Context, opts ...grpc.CallOption) (VimonadeService_SendClient, error)
+	Sync(ctx context.Context, in *SyncFileRequest, opts ...grpc.CallOption) (VimonadeService_SyncClient, error)
+	MakeDir(ctx context.Context, opts ...grpc.CallOption) (VimonadeService_MakeDirClient, error)
 }
 
 type vimonadeServiceClient struct {
@@ -453,11 +653,76 @@ func (x *vimonadeServiceSendClient) CloseAndRecv() (*SendFileResponse, error) {
 	return m, nil
 }
 
+func (c *vimonadeServiceClient) Sync(ctx context.Context, in *SyncFileRequest, opts ...grpc.CallOption) (VimonadeService_SyncClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_VimonadeService_serviceDesc.Streams[1], "/vimonade.VimonadeService/Sync", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &vimonadeServiceSyncClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type VimonadeService_SyncClient interface {
+	Recv() (*SyncFileResponse, error)
+	grpc.ClientStream
+}
+
+type vimonadeServiceSyncClient struct {
+	grpc.ClientStream
+}
+
+func (x *vimonadeServiceSyncClient) Recv() (*SyncFileResponse, error) {
+	m := new(SyncFileResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *vimonadeServiceClient) MakeDir(ctx context.Context, opts ...grpc.CallOption) (VimonadeService_MakeDirClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_VimonadeService_serviceDesc.Streams[2], "/vimonade.VimonadeService/MakeDir", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &vimonadeServiceMakeDirClient{stream}
+	return x, nil
+}
+
+type VimonadeService_MakeDirClient interface {
+	Send(*DirRequest) error
+	Recv() (*DirResponse, error)
+	grpc.ClientStream
+}
+
+type vimonadeServiceMakeDirClient struct {
+	grpc.ClientStream
+}
+
+func (x *vimonadeServiceMakeDirClient) Send(m *DirRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *vimonadeServiceMakeDirClient) Recv() (*DirResponse, error) {
+	m := new(DirResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // VimonadeServiceServer is the server API for VimonadeService service.
 type VimonadeServiceServer interface {
 	Copy(context.Context, *CopyRequest) (*CopyResponse, error)
 	Paste(context.Context, *PasteRequest) (*PasteResponse, error)
 	Send(VimonadeService_SendServer) error
+	Sync(*SyncFileRequest, VimonadeService_SyncServer) error
+	MakeDir(VimonadeService_MakeDirServer) error
 }
 
 // UnimplementedVimonadeServiceServer can be embedded to have forward compatible implementations.
@@ -472,6 +737,12 @@ func (*UnimplementedVimonadeServiceServer) Paste(ctx context.Context, req *Paste
 }
 func (*UnimplementedVimonadeServiceServer) Send(srv VimonadeService_SendServer) error {
 	return status.Errorf(codes.Unimplemented, "method Send not implemented")
+}
+func (*UnimplementedVimonadeServiceServer) Sync(req *SyncFileRequest, srv VimonadeService_SyncServer) error {
+	return status.Errorf(codes.Unimplemented, "method Sync not implemented")
+}
+func (*UnimplementedVimonadeServiceServer) MakeDir(srv VimonadeService_MakeDirServer) error {
+	return status.Errorf(codes.Unimplemented, "method MakeDir not implemented")
 }
 
 func RegisterVimonadeServiceServer(s *grpc.Server, srv VimonadeServiceServer) {
@@ -540,6 +811,53 @@ func (x *vimonadeServiceSendServer) Recv() (*SendFileRequest, error) {
 	return m, nil
 }
 
+func _VimonadeService_Sync_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SyncFileRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(VimonadeServiceServer).Sync(m, &vimonadeServiceSyncServer{stream})
+}
+
+type VimonadeService_SyncServer interface {
+	Send(*SyncFileResponse) error
+	grpc.ServerStream
+}
+
+type vimonadeServiceSyncServer struct {
+	grpc.ServerStream
+}
+
+func (x *vimonadeServiceSyncServer) Send(m *SyncFileResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _VimonadeService_MakeDir_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(VimonadeServiceServer).MakeDir(&vimonadeServiceMakeDirServer{stream})
+}
+
+type VimonadeService_MakeDirServer interface {
+	Send(*DirResponse) error
+	Recv() (*DirRequest, error)
+	grpc.ServerStream
+}
+
+type vimonadeServiceMakeDirServer struct {
+	grpc.ServerStream
+}
+
+func (x *vimonadeServiceMakeDirServer) Send(m *DirResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *vimonadeServiceMakeDirServer) Recv() (*DirRequest, error) {
+	m := new(DirRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _VimonadeService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "vimonade.VimonadeService",
 	HandlerType: (*VimonadeServiceServer)(nil),
@@ -557,6 +875,17 @@ var _VimonadeService_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Send",
 			Handler:       _VimonadeService_Send_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "Sync",
+			Handler:       _VimonadeService_Sync_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "MakeDir",
+			Handler:       _VimonadeService_MakeDir_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},

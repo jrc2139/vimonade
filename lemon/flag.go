@@ -50,6 +50,10 @@ func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 			c.Type = SEND
 			del(i)
 			return
+		case "sync":
+			c.Type = SYNC
+			del(i)
+			return
 		case "server":
 			c.Type = SERVER
 			del(i)

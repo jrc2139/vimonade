@@ -6,7 +6,9 @@ service VimonadeService {
   rpc Copy(CopyRequest) returns (CopyResponse) {}
   rpc Paste(PasteRequest) returns (PasteResponse) {}
   rpc Send(stream SendFileRequest) returns (SendFileResponse) {};
-  // rpc Sync(stream FileRequests) returns (stream FileResponses) {};
+  rpc Sync(SyncFileRequest) returns (stream SyncFileResponse) {};
+  rpc MakeDir(stream DirRequest) returns (stream DirResponse) {};
+  // rpc Check(stream CheckFileRequest) returns (stream CheckFileResponse) {};
 }
 
 message CopyRequest {
@@ -20,6 +22,31 @@ message PasteRequest {
 }
 
 message PasteResponse {}
+
+message DirRequest {
+  string name = 1;
+}
+
+message DirResponse {}
+
+// message CheckFileRequest {
+  // string name = 1;
+// }
+
+// message CheckFileResponse {
+  // bool present = 1;
+// }
+
+message SyncFileRequest {
+  string name = 1;
+}
+
+message SyncFileResponse {
+  oneof data {
+    FileInfo info = 1;
+    bytes chunk_data = 2;
+  };
+}
 
 // message FileRequests {
   // repeated SendFileRequest request = 1;

@@ -5,6 +5,12 @@
 *.dll
 *.so
 *.dylib
+*.key
+*.csr
+*.pem
+*.cert
+*.srl
+*.DS_Store
 
 # Test binary, built with `go test -c`
 *.test
@@ -14,18 +20,11 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-dist/
-pkg/
+dist
+certs
+pkg
 .DS_Store
 
-ca.key
-ca.cert
-ca.srl
-service.key
-service.csr
-service.pem
-ca-org.cert
-ca-vault.cert
 rice-box.go
 
-vimonade
+# vimonade

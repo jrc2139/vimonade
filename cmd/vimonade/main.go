@@ -35,24 +35,25 @@ func Do(c *lemon.CLI, args []string) int {
 		return lemon.Help
 	}
 
+	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock(),
+		grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second})}
+
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
-		return vc.Copy(c, logger, grpc.WithInsecure(),
-			grpc.WithBlock(),
-			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
+		return vc.Copy(c, logger, opts...)
 
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
-		return vc.Paste(c, logger, grpc.WithInsecure(),
-			grpc.WithBlock(),
-			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
+		return vc.Paste(c, logger, opts...)
 
 	case lemon.SEND:
 		logger.Debug("Sending file")
-		return vc.Send(c, logger, grpc.WithInsecure(),
-			grpc.WithBlock(),
-			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
+		return vc.Send(c, logger, opts...)
+
+	case lemon.SYNC:
+		logger.Debug("Syncing file")
+		return vc.Sync(c, logger, opts...)
 
 	case lemon.SERVER:
 		logger.Debug("Starting Server")
