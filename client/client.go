@@ -40,8 +40,8 @@ func New(c *lemon.CLI, conn *grpc.ClientConn, logger *zap.Logger) *client {
 	}
 }
 
-func (c *client) copy(text string, cnx bool) error {
-	c.logger.Debug("Sending: " + text)
+func (c *client) copyText(text string, cnx bool) error {
+	c.logger.Debug("Copying: " + text)
 
 	// not interested in copying blank and newlines
 	switch text {
@@ -68,7 +68,7 @@ func (c *client) copy(text string, cnx bool) error {
 	return nil
 }
 
-func (c *client) paste(cnx bool) (string, error) {
+func (c *client) pasteText(cnx bool) (string, error) {
 	c.logger.Debug("Receiving")
 
 	text, err := clipboard.ReadAll()
@@ -105,8 +105,8 @@ func Copy(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 
 	lc := New(c, conn, logger)
 
-	if err := lc.copy(c.DataSource, isConnected); err != nil {
-		logger.Error("Failed to Copy: " + err.Error())
+	if err := lc.copyText(c.DataSource, isConnected); err != nil {
+		logger.Error("failed to Copy: " + err.Error())
 		writeError(c, err)
 
 		return lemon.RPCError
@@ -130,7 +130,7 @@ func Paste(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 
 	var text string
 
-	text, err = lc.paste(isConnected)
+	text, err = lc.pasteText(isConnected)
 	if err != nil {
 		logger.Error("Failed to Paste: " + err.Error())
 		writeError(c, err)
