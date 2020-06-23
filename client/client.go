@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/atotto/clipboard"
@@ -39,59 +40,6 @@ func New(c *lemon.CLI, conn *grpc.ClientConn, logger *zap.Logger) *client {
 		grpcClient: pb.NewVimonadeServiceClient(conn),
 	}
 }
-
-func (c *client) copyText(text string, cnx bool) error {
-	c.logger.Debug("Copying: " + text)
-
-	// not interested in copying blank and newlines
-	switch text {
-	case "":
-		return nil
-	case "\n":
-		return nil
-	default:
-		if cnx {
-			ctx, cancel := context.WithTimeout(context.Background(), timeOut)
-			defer cancel()
-
-			_, err := c.grpcClient.Copy(ctx, &wrappers.StringValue{Value: text})
-			if err != nil {
-				c.logger.Debug("error with client copying " + err.Error())
-			}
-		}
-	}
-
-	if err := clipboard.WriteAll(text); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (c *client) pasteText(cnx bool) (string, error) {
-	c.logger.Debug("Receiving")
-
-	text, err := clipboard.ReadAll()
-	if err != nil {
-		return "", err
-	}
-
-	if cnx {
-		ctx, cancel := context.WithTimeout(context.Background(), timeOut)
-		defer cancel()
-
-		if _, err := c.grpcClient.Paste(ctx, &wrappers.StringValue{Value: text}); err != nil {
-			c.logger.Debug("error with client pasting " + err.Error())
-		}
-	}
-
-	return lemon.ConvertLineEnding(text, c.lineEnding), nil
-}
-
-func writeError(c *lemon.CLI, err error) {
-	fmt.Fprintln(c.Err, err.Error())
-}
-
 func Copy(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 	isConnected := true
 
@@ -115,6 +63,34 @@ func Copy(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 	return lemon.Success
 }
 
+func (c *client) copyText(text string, cnx bool) error {
+	c.logger.Debug("Copying: " + text)
+
+	// not interested in copying blank and newlines
+	switch text {
+	case "":
+		return nil
+	case "\n":
+		return nil
+	default:
+		if cnx {
+			ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+			defer cancel()
+
+			_, err := c.grpcClient.Copy(ctx, &wrappers.StringValue{Value: strings.TrimSpace(text)})
+			if err != nil {
+				c.logger.Debug("error with client copying " + err.Error())
+			}
+		}
+	}
+
+	if err := clipboard.WriteAll(text); err != nil {
+		c.logger.Error("error writing to clipboard: " + err.Error())
+	}
+
+	return nil
+}
+
 func Paste(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 	isConnected := true
 
@@ -130,14 +106,7 @@ func Paste(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 
 	var text string
 
-	text, err = lc.pasteText(isConnected)
-	if err != nil {
-		logger.Error("Failed to Paste: " + err.Error())
-		writeError(c, err)
-
-		return lemon.RPCError
-	}
-
+	text = lc.pasteText(isConnected)
 	if _, err := c.Out.Write([]byte(text)); err != nil {
 		logger.Error("Failed to output Paste to stdin: " + err.Error())
 		writeError(c, err)
@@ -146,6 +115,26 @@ func Paste(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 	}
 
 	return lemon.Success
+}
+
+func (c *client) pasteText(cnx bool) string {
+	c.logger.Debug("Receiving")
+
+	text, err := clipboard.ReadAll()
+	if err != nil {
+		c.logger.Error("error reading from clipboard: " + err.Error())
+	}
+
+	if cnx {
+		ctx, cancel := context.WithTimeout(context.Background(), timeOut)
+		defer cancel()
+
+		if _, err := c.grpcClient.Paste(ctx, &wrappers.StringValue{Value: text}); err != nil {
+			c.logger.Debug("error with client pasting " + err.Error())
+		}
+	}
+
+	return lemon.ConvertLineEnding(text, c.lineEnding)
 }
 
 func Send(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
@@ -235,4 +224,8 @@ func (c *client) send(path string) error {
 	c.logger.Debug(fmt.Sprintf("image sent with id: %s, size: %d", res.GetName(), res.GetSize()))
 
 	return nil
+}
+
+func writeError(c *lemon.CLI, err error) {
+	fmt.Fprintln(c.Err, err.Error())
 }

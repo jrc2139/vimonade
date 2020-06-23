@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"os"
+	"time"
 
 	rice "github.com/GeertJohan/go.rice"
 	"google.golang.org/grpc"
@@ -71,15 +72,21 @@ func Do(c *lemon.CLI, args []string) int {
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
-		return vc.Copy(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
+		return vc.Copy(c, logger, grpc.WithTransportCredentials(clientCreds),
+			grpc.WithBlock(),
+			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
-		return vc.Paste(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
+		return vc.Paste(c, logger, grpc.WithTransportCredentials(clientCreds),
+			grpc.WithBlock(),
+			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.SEND:
 		logger.Debug("Sending file")
-		return vc.Send(c, logger, grpc.WithTransportCredentials(clientCreds), grpc.WithBlock())
+		return vc.Send(c, logger, grpc.WithTransportCredentials(clientCreds),
+			grpc.WithBlock(),
+			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.SERVER:
 		serverKeyBytes, err := certBox.Bytes("service.key")

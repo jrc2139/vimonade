@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	_ "google.golang.org/grpc/encoding/gzip"
 	"google.golang.org/grpc/peer"
 
 	pb "github.com/jrc2139/vimonade/api"
@@ -51,7 +52,6 @@ func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger *zap.Log
 		service.NewVimonadeServerService(store, c.LineEnding, logger),
 		logger, creds, c.Allow, fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
 		logger.Error("Server error: " + err.Error())
-		fmt.Fprintln(c.Err, err.Error())
 
 		return lemon.RPCError
 	}

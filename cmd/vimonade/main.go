@@ -23,18 +23,12 @@ func main() {
 }
 
 func Do(c *lemon.CLI, args []string) int {
-	// logger := log.New()
-	// logger.SetHandler(log.LvlFilterHandler(log.LvlError, log.StdoutHandler))
-
 	if err := c.FlagParse(args, false); err != nil {
 		fmt.Fprintln(c.Err, err.Error())
 		return lemon.FlagParseError
 	}
 
 	logger := logging.InitLogger(c.LogLevel)
-
-	// logLevel := logLevelMap[c.LogLevel]
-	// logger.SetHandler(log.LvlFilterHandler(logLevel, log.StdoutHandler))
 
 	if c.Help {
 		fmt.Fprint(c.Err, lemon.Usage)
@@ -44,17 +38,21 @@ func Do(c *lemon.CLI, args []string) int {
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
-		return vc.Copy(c, logger, grpc.WithInsecure(), grpc.WithConnectParams(
-			grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
+		return vc.Copy(c, logger, grpc.WithInsecure(),
+			grpc.WithBlock(),
+			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
-		return vc.Paste(c, logger, grpc.WithInsecure(), grpc.WithConnectParams(
-			grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
+		return vc.Paste(c, logger, grpc.WithInsecure(),
+			grpc.WithBlock(),
+			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.SEND:
 		logger.Debug("Sending file")
-		return vc.Send(c, logger, grpc.WithInsecure())
+		return vc.Send(c, logger, grpc.WithInsecure(),
+			grpc.WithBlock(),
+			grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.SERVER:
 		logger.Debug("Starting Server")
