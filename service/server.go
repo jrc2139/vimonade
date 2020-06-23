@@ -159,29 +159,6 @@ func logError(err error) error {
 	return err
 }
 
-/*
-import (
-	"context"
-	"fmt"
-
-	log "github.com/inconshreveable/log15"
-	"google.golang.org/grpc/credentials"
-
-	"github.com/jrc2139/vimonade/lemon"
-	"github.com/jrc2139/vimonade/protocol/grpc"
-	"github.com/jrc2139/vimonade/service"
-)
-
-func Serve(c *lemon.CLI, creds credentials.TransportCredentials, logger log.Logger) error {
-	// Server
-	if err := grpc.RunServer(context.Background(), service.NewVimonadeServerService(c.LineEnding, logger), creds, c.Allow, fmt.Sprintf("%s:%d", c.Host, c.Port)); err != nil {
-		return err
-	}
-
-	return nil
-}
-*/
-
 func (s *vimonadeServiceServer) contextError(ctx context.Context) error {
 	switch ctx.Err() {
 	case context.Canceled:

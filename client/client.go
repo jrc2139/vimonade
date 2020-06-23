@@ -41,7 +41,7 @@ func New(c *lemon.CLI, conn *grpc.ClientConn, logger *zap.Logger) *client {
 }
 
 func (c *client) copy(text string, cnx bool) error {
-	c.logger.Debug("Sending: " + text)
+	c.logger.Debug("Copying: " + text)
 
 	// not interested in copying blank and newlines
 	switch text {
@@ -95,18 +95,47 @@ func writeError(c *lemon.CLI, err error) {
 func Copy(c *lemon.CLI, logger *zap.Logger, opts ...grpc.DialOption) int {
 	isConnected := true
 
-	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
-	if err != nil {
-		// don't return err if connection isn't made
-		logger.Debug("failed to dial server: " + err.Error())
+	var conn *grpc.ClientConn
+
+	connChan := make(chan *grpc.ClientConn, 1)
+	errChan := make(chan bool, 1)
+
+	go func() {
+		conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
+		if err != nil {
+			// don't return err if connection isn't made
+			logger.Debug("failed to dial server: " + err.Error())
+			errChan <- true
+		}
+
+		connChan <- conn
+	}()
+
+	select {
+	case c := <-connChan:
+		conn = c
+	case <-errChan:
 		isConnected = false
+	case <-time.After(1 * time.Second):
+		isConnected = false
+		fmt.Println("timed out")
 	}
-	defer conn.Close()
+
+	// conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Host, c.Port), opts...)
+	// if err != nil {
+	// don't return err if connection isn't made
+	// logger.Debug("failed to dial server: " + err.Error())
+	// isConnected = false
+	// }
+	if conn != nil {
+		defer conn.Close()
+	}
+	// fmt.Println(conn)
 
 	lc := New(c, conn, logger)
 
 	if err := lc.copy(c.DataSource, isConnected); err != nil {
-		logger.Error("Failed to Copy: " + err.Error())
+		logger.Error("failed to Copy: " + err.Error())
 		writeError(c, err)
 
 		return lemon.RPCError

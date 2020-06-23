@@ -43,15 +43,15 @@ func Do(c *lemon.CLI, args []string) int {
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
-		return vc.Copy(c, logger, grpc.WithInsecure(), grpc.WithBlock())
+		return vc.Copy(c, logger, grpc.WithInsecure())
 
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
-		return vc.Paste(c, logger, grpc.WithInsecure(), grpc.WithBlock())
+		return vc.Paste(c, logger, grpc.WithInsecure())
 
 	case lemon.SEND:
 		logger.Debug("Sending file")
-		return vc.Send(c, logger, grpc.WithInsecure(), grpc.WithBlock())
+		return vc.Send(c, logger, grpc.WithInsecure())
 
 	case lemon.SERVER:
 		logger.Debug("Starting Server")
