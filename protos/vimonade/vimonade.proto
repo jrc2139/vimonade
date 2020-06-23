@@ -2,14 +2,32 @@ syntax = "proto3";
 
 package vimonade;
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
-
 service VimonadeService {
-  rpc Copy(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
-  rpc Paste(google.protobuf.StringValue) returns (google.protobuf.StringValue) {}
+  rpc Copy(CopyRequest) returns (CopyResponse) {}
+  rpc Paste(PasteRequest) returns (PasteResponse) {}
   rpc Send(stream SendFileRequest) returns (SendFileResponse) {};
+  // rpc Sync(stream FileRequests) returns (stream FileResponses) {};
 }
+
+message CopyRequest {
+  string value = 1;
+}
+
+message CopyResponse {}
+
+message PasteRequest {
+  string value = 1;
+}
+
+message PasteResponse {}
+
+// message FileRequests {
+  // repeated SendFileRequest request = 1;
+// }
+//
+// message FileResponses {
+  // repeated SendFileResponse response = 1;
+// }
 
 message SendFileRequest {
   oneof data {

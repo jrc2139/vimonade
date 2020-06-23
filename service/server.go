@@ -7,14 +7,11 @@ import (
 	"io"
 
 	"github.com/atotto/clipboard"
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	pb "github.com/jrc2139/vimonade/api"
-	"github.com/jrc2139/vimonade/lemon"
 )
 
 const (
@@ -45,15 +42,6 @@ func (s *vimonadeServiceServer) Send(stream pb.VimonadeService_SendServer) error
 	fileType := req.GetInfo().GetFileType()
 
 	s.logger.Info("receive an send-file request for " + name)
-
-	// laptop, err := server.laptopStore.Find(id)
-	// if err != nil {
-	// return logError(status.Errorf(codes.Internal, "cannot find laptop: %v", err))
-	// }
-	// if laptop == nil {
-	// return logError(status.Errorf(codes.InvalidArgument, "laptop id %s
-	// doesn't exist", id))
-	// }
 
 	fData := bytes.Buffer{}
 	fSize := 0
@@ -110,10 +98,10 @@ func (s *vimonadeServiceServer) Send(stream pb.VimonadeService_SendServer) error
 	return nil
 }
 
-func (s *vimonadeServiceServer) Copy(ctx context.Context, message *wrappers.StringValue) (*empty.Empty, error) {
+func (s *vimonadeServiceServer) Copy(ctx context.Context, message *pb.CopyRequest) (*pb.CopyResponse, error) {
 	err := s.contextError(ctx)
 	if err != nil {
-		return &empty.Empty{}, err
+		return &pb.CopyResponse{}, err
 	}
 
 	if message != nil {
@@ -121,19 +109,19 @@ func (s *vimonadeServiceServer) Copy(ctx context.Context, message *wrappers.Stri
 
 		if err := clipboard.WriteAll(message.GetValue()); err != nil {
 			s.logger.Fatal("Writing to clipboard failed: " + err.Error())
-			return &empty.Empty{}, err
+			return &pb.CopyResponse{}, err
 		}
 	} else {
 		s.logger.Debug("Copy requested: message=<empty>")
 	}
 
-	return &empty.Empty{}, nil
+	return &pb.CopyResponse{}, err
 }
 
-func (s *vimonadeServiceServer) Paste(ctx context.Context, message *wrappers.StringValue) (*wrappers.StringValue, error) {
+func (s *vimonadeServiceServer) Paste(ctx context.Context, message *pb.PasteRequest) (*pb.PasteResponse, error) {
 	err := s.contextError(ctx)
 	if err != nil {
-		return &wrappers.StringValue{Value: ""}, err
+		return &pb.PasteResponse{}, err
 	}
 
 	if message != nil {
@@ -142,13 +130,13 @@ func (s *vimonadeServiceServer) Paste(ctx context.Context, message *wrappers.Str
 		_, err := clipboard.ReadAll()
 		if err != nil {
 			s.logger.Fatal("Reading from clipboard failed: " + err.Error())
-			return &wrappers.StringValue{Value: ""}, err
+			return &pb.PasteResponse{}, err
 		}
 	} else {
 		s.logger.Debug("Paste requested: message=<empty>")
 	}
 
-	return &wrappers.StringValue{Value: lemon.ConvertLineEnding(message.GetValue(), s.lineEnding)}, nil
+	return &pb.PasteResponse{}, nil
 }
 
 func logError(err error) error {

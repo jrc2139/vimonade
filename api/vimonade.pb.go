@@ -7,8 +7,6 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	empty "github.com/golang/protobuf/ptypes/empty"
-	wrappers "github.com/golang/protobuf/ptypes/wrappers"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -26,6 +24,146 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type CopyRequest struct {
+	Value                string   `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CopyRequest) Reset()         { *m = CopyRequest{} }
+func (m *CopyRequest) String() string { return proto.CompactTextString(m) }
+func (*CopyRequest) ProtoMessage()    {}
+func (*CopyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{0}
+}
+
+func (m *CopyRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CopyRequest.Unmarshal(m, b)
+}
+func (m *CopyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CopyRequest.Marshal(b, m, deterministic)
+}
+func (m *CopyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CopyRequest.Merge(m, src)
+}
+func (m *CopyRequest) XXX_Size() int {
+	return xxx_messageInfo_CopyRequest.Size(m)
+}
+func (m *CopyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CopyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CopyRequest proto.InternalMessageInfo
+
+func (m *CopyRequest) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+type CopyResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CopyResponse) Reset()         { *m = CopyResponse{} }
+func (m *CopyResponse) String() string { return proto.CompactTextString(m) }
+func (*CopyResponse) ProtoMessage()    {}
+func (*CopyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{1}
+}
+
+func (m *CopyResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CopyResponse.Unmarshal(m, b)
+}
+func (m *CopyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CopyResponse.Marshal(b, m, deterministic)
+}
+func (m *CopyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CopyResponse.Merge(m, src)
+}
+func (m *CopyResponse) XXX_Size() int {
+	return xxx_messageInfo_CopyResponse.Size(m)
+}
+func (m *CopyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CopyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CopyResponse proto.InternalMessageInfo
+
+type PasteRequest struct {
+	Value                string   `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PasteRequest) Reset()         { *m = PasteRequest{} }
+func (m *PasteRequest) String() string { return proto.CompactTextString(m) }
+func (*PasteRequest) ProtoMessage()    {}
+func (*PasteRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{2}
+}
+
+func (m *PasteRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PasteRequest.Unmarshal(m, b)
+}
+func (m *PasteRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PasteRequest.Marshal(b, m, deterministic)
+}
+func (m *PasteRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PasteRequest.Merge(m, src)
+}
+func (m *PasteRequest) XXX_Size() int {
+	return xxx_messageInfo_PasteRequest.Size(m)
+}
+func (m *PasteRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_PasteRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PasteRequest proto.InternalMessageInfo
+
+func (m *PasteRequest) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+type PasteResponse struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PasteResponse) Reset()         { *m = PasteResponse{} }
+func (m *PasteResponse) String() string { return proto.CompactTextString(m) }
+func (*PasteResponse) ProtoMessage()    {}
+func (*PasteResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4d1d9016bdda1f4a, []int{3}
+}
+
+func (m *PasteResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PasteResponse.Unmarshal(m, b)
+}
+func (m *PasteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PasteResponse.Marshal(b, m, deterministic)
+}
+func (m *PasteResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PasteResponse.Merge(m, src)
+}
+func (m *PasteResponse) XXX_Size() int {
+	return xxx_messageInfo_PasteResponse.Size(m)
+}
+func (m *PasteResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_PasteResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PasteResponse proto.InternalMessageInfo
+
 type SendFileRequest struct {
 	// Types that are valid to be assigned to Data:
 	//	*SendFileRequest_Info
@@ -40,7 +178,7 @@ func (m *SendFileRequest) Reset()         { *m = SendFileRequest{} }
 func (m *SendFileRequest) String() string { return proto.CompactTextString(m) }
 func (*SendFileRequest) ProtoMessage()    {}
 func (*SendFileRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4d1d9016bdda1f4a, []int{0}
+	return fileDescriptor_4d1d9016bdda1f4a, []int{4}
 }
 
 func (m *SendFileRequest) XXX_Unmarshal(b []byte) error {
@@ -118,7 +256,7 @@ func (m *SendFileResponse) Reset()         { *m = SendFileResponse{} }
 func (m *SendFileResponse) String() string { return proto.CompactTextString(m) }
 func (*SendFileResponse) ProtoMessage()    {}
 func (*SendFileResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4d1d9016bdda1f4a, []int{1}
+	return fileDescriptor_4d1d9016bdda1f4a, []int{5}
 }
 
 func (m *SendFileResponse) XXX_Unmarshal(b []byte) error {
@@ -165,7 +303,7 @@ func (m *FileInfo) Reset()         { *m = FileInfo{} }
 func (m *FileInfo) String() string { return proto.CompactTextString(m) }
 func (*FileInfo) ProtoMessage()    {}
 func (*FileInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4d1d9016bdda1f4a, []int{2}
+	return fileDescriptor_4d1d9016bdda1f4a, []int{6}
 }
 
 func (m *FileInfo) XXX_Unmarshal(b []byte) error {
@@ -201,6 +339,10 @@ func (m *FileInfo) GetFileType() string {
 }
 
 func init() {
+	proto.RegisterType((*CopyRequest)(nil), "vimonade.CopyRequest")
+	proto.RegisterType((*CopyResponse)(nil), "vimonade.CopyResponse")
+	proto.RegisterType((*PasteRequest)(nil), "vimonade.PasteRequest")
+	proto.RegisterType((*PasteResponse)(nil), "vimonade.PasteResponse")
 	proto.RegisterType((*SendFileRequest)(nil), "vimonade.SendFileRequest")
 	proto.RegisterType((*SendFileResponse)(nil), "vimonade.SendFileResponse")
 	proto.RegisterType((*FileInfo)(nil), "vimonade.FileInfo")
@@ -211,27 +353,27 @@ func init() {
 }
 
 var fileDescriptor_4d1d9016bdda1f4a = []byte{
-	// 316 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0x4f, 0x4b, 0xc3, 0x40,
-	0x10, 0xc5, 0x13, 0x89, 0xa5, 0x19, 0xff, 0x54, 0xf6, 0x20, 0x35, 0x15, 0x2d, 0x39, 0xe5, 0x94,
-	0x42, 0xbd, 0x29, 0x08, 0xfe, 0xa9, 0xd4, 0x9b, 0xa4, 0xd2, 0x6b, 0xd9, 0x36, 0x93, 0xba, 0x98,
-	0xee, 0xae, 0xd9, 0x4d, 0x25, 0x7e, 0x55, 0xbf, 0x8c, 0xec, 0xc6, 0x5a, 0xa8, 0x45, 0x6f, 0x93,
-	0xf7, 0x66, 0xde, 0x0b, 0xbf, 0x85, 0xc3, 0x25, 0x5b, 0x08, 0x4e, 0x53, 0x8c, 0x65, 0x21, 0xb4,
-	0x20, 0xcd, 0xd5, 0x77, 0xd0, 0x99, 0x0b, 0x31, 0xcf, 0xb1, 0x67, 0xf5, 0x69, 0x99, 0xf5, 0x70,
-	0x21, 0x75, 0x55, 0xaf, 0x05, 0x67, 0x9b, 0xe6, 0x7b, 0x41, 0xa5, 0xc4, 0x42, 0xd5, 0x7e, 0x98,
-	0x42, 0x6b, 0x84, 0x3c, 0x7d, 0x60, 0x39, 0x26, 0xf8, 0x56, 0xa2, 0xd2, 0x24, 0x02, 0x8f, 0xf1,
-	0x4c, 0xb4, 0xdd, 0xae, 0x1b, 0xed, 0xf5, 0x49, 0xfc, 0x53, 0x6c, 0x96, 0x1e, 0x79, 0x26, 0x86,
-	0x4e, 0x62, 0x37, 0xc8, 0x39, 0xc0, 0xec, 0xa5, 0xe4, 0xaf, 0x93, 0x94, 0x6a, 0xda, 0xde, 0xe9,
-	0xba, 0xd1, 0xfe, 0xd0, 0x49, 0x7c, 0xab, 0xdd, 0x53, 0x4d, 0x6f, 0x1b, 0xe0, 0x19, 0x2b, 0xbc,
-	0x84, 0xa3, 0x75, 0x8b, 0x92, 0x82, 0x2b, 0x24, 0x04, 0x3c, 0x4e, 0x17, 0x68, 0x6b, 0xfc, 0xc4,
-	0xce, 0x46, 0x53, 0xec, 0x03, 0x6d, 0xd4, 0x41, 0x62, 0xe7, 0xf0, 0x0a, 0x9a, 0xab, 0xe2, 0xad,
-	0x37, 0x1d, 0xf0, 0x33, 0x96, 0xe3, 0x44, 0x57, 0xb2, 0x3e, 0xf4, 0x93, 0xa6, 0x11, 0x9e, 0x2b,
-	0x89, 0xfd, 0x4f, 0x17, 0x5a, 0xe3, 0xef, 0xff, 0x1f, 0x61, 0xb1, 0x64, 0x33, 0x24, 0xd7, 0xe0,
-	0xdd, 0x09, 0x59, 0x91, 0xd3, 0xb8, 0x66, 0x13, 0xaf, 0xd8, 0xc4, 0x23, 0x5d, 0x30, 0x3e, 0x1f,
-	0xd3, 0xbc, 0xc4, 0xe0, 0xf8, 0x97, 0x3b, 0x30, 0x58, 0x43, 0x87, 0x0c, 0x60, 0xf7, 0x89, 0x2a,
-	0x8d, 0xff, 0x04, 0xfc, 0xe9, 0x86, 0x0e, 0xb9, 0x01, 0xcf, 0x30, 0x21, 0x27, 0x6b, 0xc0, 0x1b,
-	0x2f, 0x11, 0x04, 0xdb, 0xac, 0x1a, 0x5f, 0xe8, 0x44, 0xee, 0xb4, 0x61, 0xa3, 0x2f, 0xbe, 0x02,
-	0x00, 0x00, 0xff, 0xff, 0xb9, 0xb2, 0x1d, 0x1c, 0x1c, 0x02, 0x00, 0x00,
+	// 313 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xcb, 0x4f, 0xc2, 0x40,
+	0x10, 0xc6, 0xa9, 0x29, 0x84, 0x0e, 0x2f, 0xb3, 0xf1, 0x81, 0xf5, 0x20, 0xa9, 0x1e, 0x7a, 0xe2,
+	0x80, 0x07, 0x13, 0x3c, 0xf9, 0x88, 0xc1, 0x9b, 0x59, 0x8c, 0x57, 0xb2, 0xd2, 0x21, 0x6e, 0x84,
+	0xdd, 0x4a, 0xb7, 0x4d, 0xea, 0x7f, 0xe8, 0x7f, 0x65, 0x76, 0xfb, 0x0c, 0x12, 0x6f, 0x3b, 0xdf,
+	0x7c, 0xdf, 0xcc, 0xf4, 0x97, 0x42, 0x3f, 0xe1, 0x1b, 0x29, 0x58, 0x80, 0xe3, 0x70, 0x2b, 0x95,
+	0x24, 0xed, 0xa2, 0xf6, 0x2e, 0xa1, 0xf3, 0x20, 0xc3, 0x94, 0xe2, 0x57, 0x8c, 0x91, 0x22, 0x47,
+	0xd0, 0x4c, 0xd8, 0x3a, 0xc6, 0xa1, 0x35, 0xb2, 0x7c, 0x87, 0x66, 0x85, 0xd7, 0x87, 0x6e, 0x66,
+	0x8a, 0x42, 0x29, 0x22, 0xf4, 0xae, 0xa0, 0xfb, 0xc2, 0x22, 0x85, 0xff, 0xa7, 0x06, 0xd0, 0xcb,
+	0x5d, 0x79, 0x2c, 0x80, 0xc1, 0x1c, 0x45, 0xf0, 0xc4, 0xd7, 0x65, 0xd2, 0x07, 0x9b, 0x8b, 0x95,
+	0x34, 0xc1, 0xce, 0x84, 0x8c, 0xcb, 0x3b, 0xb5, 0xe9, 0x59, 0xac, 0xe4, 0xac, 0x41, 0x8d, 0x83,
+	0x5c, 0x00, 0x2c, 0x3f, 0x62, 0xf1, 0xb9, 0x08, 0x98, 0x62, 0xc3, 0x83, 0x91, 0xe5, 0x77, 0x67,
+	0x0d, 0xea, 0x18, 0xed, 0x91, 0x29, 0x76, 0xdf, 0x02, 0x5b, 0xb7, 0xbc, 0x29, 0x1c, 0x56, 0x5b,
+	0xb2, 0xcd, 0x84, 0x80, 0x2d, 0xd8, 0xa6, 0xb8, 0xcf, 0xbc, 0xb5, 0x16, 0xf1, 0x6f, 0x34, 0xa3,
+	0x7a, 0xd4, 0xbc, 0xbd, 0x5b, 0x68, 0x17, 0x8b, 0xf7, 0x66, 0xce, 0xc1, 0x59, 0xf1, 0x35, 0x2e,
+	0x54, 0x1a, 0x66, 0x41, 0x87, 0xb6, 0xb5, 0xf0, 0x9a, 0x86, 0x38, 0xf9, 0xb1, 0x60, 0xf0, 0x96,
+	0xdf, 0x3f, 0xc7, 0x6d, 0xc2, 0x97, 0x48, 0x6e, 0xc0, 0xd6, 0xe4, 0xc8, 0x71, 0xf5, 0x65, 0x35,
+	0xdc, 0xee, 0xc9, 0xae, 0x9c, 0x93, 0x6a, 0x90, 0x29, 0x34, 0x0d, 0x3c, 0x52, 0xb3, 0xd4, 0x99,
+	0xbb, 0xa7, 0x7f, 0xf4, 0x32, 0x7b, 0x07, 0xb6, 0x26, 0x40, 0xce, 0x2a, 0xcb, 0x0e, 0x77, 0xd7,
+	0xdd, 0xd7, 0x2a, 0x06, 0xf8, 0xd6, 0x7b, 0xcb, 0xfc, 0x27, 0xd7, 0xbf, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x8a, 0xa2, 0x5c, 0xa7, 0x39, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -246,8 +388,8 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type VimonadeServiceClient interface {
-	Copy(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*empty.Empty, error)
-	Paste(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error)
+	Copy(ctx context.Context, in *CopyRequest, opts ...grpc.CallOption) (*CopyResponse, error)
+	Paste(ctx context.Context, in *PasteRequest, opts ...grpc.CallOption) (*PasteResponse, error)
 	Send(ctx context.Context, opts ...grpc.CallOption) (VimonadeService_SendClient, error)
 }
 
@@ -259,8 +401,8 @@ func NewVimonadeServiceClient(cc grpc.ClientConnInterface) VimonadeServiceClient
 	return &vimonadeServiceClient{cc}
 }
 
-func (c *vimonadeServiceClient) Copy(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *vimonadeServiceClient) Copy(ctx context.Context, in *CopyRequest, opts ...grpc.CallOption) (*CopyResponse, error) {
+	out := new(CopyResponse)
 	err := c.cc.Invoke(ctx, "/vimonade.VimonadeService/Copy", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -268,8 +410,8 @@ func (c *vimonadeServiceClient) Copy(ctx context.Context, in *wrappers.StringVal
 	return out, nil
 }
 
-func (c *vimonadeServiceClient) Paste(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error) {
-	out := new(wrappers.StringValue)
+func (c *vimonadeServiceClient) Paste(ctx context.Context, in *PasteRequest, opts ...grpc.CallOption) (*PasteResponse, error) {
+	out := new(PasteResponse)
 	err := c.cc.Invoke(ctx, "/vimonade.VimonadeService/Paste", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -313,8 +455,8 @@ func (x *vimonadeServiceSendClient) CloseAndRecv() (*SendFileResponse, error) {
 
 // VimonadeServiceServer is the server API for VimonadeService service.
 type VimonadeServiceServer interface {
-	Copy(context.Context, *wrappers.StringValue) (*empty.Empty, error)
-	Paste(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error)
+	Copy(context.Context, *CopyRequest) (*CopyResponse, error)
+	Paste(context.Context, *PasteRequest) (*PasteResponse, error)
 	Send(VimonadeService_SendServer) error
 }
 
@@ -322,10 +464,10 @@ type VimonadeServiceServer interface {
 type UnimplementedVimonadeServiceServer struct {
 }
 
-func (*UnimplementedVimonadeServiceServer) Copy(ctx context.Context, req *wrappers.StringValue) (*empty.Empty, error) {
+func (*UnimplementedVimonadeServiceServer) Copy(ctx context.Context, req *CopyRequest) (*CopyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Copy not implemented")
 }
-func (*UnimplementedVimonadeServiceServer) Paste(ctx context.Context, req *wrappers.StringValue) (*wrappers.StringValue, error) {
+func (*UnimplementedVimonadeServiceServer) Paste(ctx context.Context, req *PasteRequest) (*PasteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Paste not implemented")
 }
 func (*UnimplementedVimonadeServiceServer) Send(srv VimonadeService_SendServer) error {
@@ -337,7 +479,7 @@ func RegisterVimonadeServiceServer(s *grpc.Server, srv VimonadeServiceServer) {
 }
 
 func _VimonadeService_Copy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.StringValue)
+	in := new(CopyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -349,13 +491,13 @@ func _VimonadeService_Copy_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/vimonade.VimonadeService/Copy",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VimonadeServiceServer).Copy(ctx, req.(*wrappers.StringValue))
+		return srv.(VimonadeServiceServer).Copy(ctx, req.(*CopyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VimonadeService_Paste_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.StringValue)
+	in := new(PasteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -367,7 +509,7 @@ func _VimonadeService_Paste_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/vimonade.VimonadeService/Paste",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VimonadeServiceServer).Paste(ctx, req.(*wrappers.StringValue))
+		return srv.(VimonadeServiceServer).Paste(ctx, req.(*PasteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

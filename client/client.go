@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -77,7 +76,7 @@ func (c *client) copyText(text string, cnx bool) error {
 			ctx, cancel := context.WithTimeout(context.Background(), timeOut)
 			defer cancel()
 
-			_, err := c.grpcClient.Copy(ctx, &wrappers.StringValue{Value: strings.TrimSpace(text)})
+			_, err := c.grpcClient.Copy(ctx, &pb.CopyRequest{Value: strings.TrimSpace(text)})
 			if err != nil {
 				c.logger.Debug("error with client copying " + err.Error())
 			}
@@ -129,7 +128,7 @@ func (c *client) pasteText(cnx bool) string {
 		ctx, cancel := context.WithTimeout(context.Background(), timeOut)
 		defer cancel()
 
-		if _, err := c.grpcClient.Paste(ctx, &wrappers.StringValue{Value: text}); err != nil {
+		if _, err := c.grpcClient.Paste(ctx, &pb.PasteRequest{Value: text}); err != nil {
 			c.logger.Debug("error with client pasting " + err.Error())
 		}
 	}
