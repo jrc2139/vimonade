@@ -4,21 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/inconshreveable/log15"
 	"google.golang.org/grpc"
 
 	vc "github.com/jrc2139/vimonade/client"
 	"github.com/jrc2139/vimonade/lemon"
+	"github.com/jrc2139/vimonade/logging"
 	vs "github.com/jrc2139/vimonade/server"
 )
-
-var logLevelMap = map[int]log.Lvl{
-	0: log.LvlDebug,
-	1: log.LvlInfo,
-	2: log.LvlWarn,
-	3: log.LvlError,
-	4: log.LvlCrit,
-}
 
 func main() {
 	cli := &lemon.CLI{
@@ -30,16 +22,18 @@ func main() {
 }
 
 func Do(c *lemon.CLI, args []string) int {
-	logger := log.New()
-	logger.SetHandler(log.LvlFilterHandler(log.LvlError, log.StdoutHandler))
+	// logger := log.New()
+	// logger.SetHandler(log.LvlFilterHandler(log.LvlError, log.StdoutHandler))
 
 	if err := c.FlagParse(args, false); err != nil {
 		fmt.Fprintln(c.Err, err.Error())
 		return lemon.FlagParseError
 	}
 
-	logLevel := logLevelMap[c.LogLevel]
-	logger.SetHandler(log.LvlFilterHandler(logLevel, log.StdoutHandler))
+	logger := logging.InitLogger(c.LogLevel)
+
+	// logLevel := logLevelMap[c.LogLevel]
+	// logger.SetHandler(log.LvlFilterHandler(logLevel, log.StdoutHandler))
 
 	if c.Help {
 		fmt.Fprint(c.Err, lemon.Usage)
@@ -64,7 +58,7 @@ func Do(c *lemon.CLI, args []string) int {
 		return vs.Serve(c, nil, logger)
 
 	default:
-		logger.Crit("vimonade error")
+		logger.Error("vimonade error")
 		return lemon.RPCError
 	}
 }

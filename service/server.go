@@ -9,7 +9,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	log "github.com/inconshreveable/log15"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -27,11 +27,11 @@ type vimonadeServiceServer struct {
 	fileStore  FileStore
 	lineEnding string
 	// path       string
-	logger log.Logger
+	logger *zap.Logger
 }
 
 // NewVimonadeServerService creates Audio service object.
-func NewVimonadeServerService(fileStore FileStore, lineEnding string, logger log.Logger) pb.VimonadeServiceServer {
+func NewVimonadeServerService(fileStore FileStore, lineEnding string, logger *zap.Logger) pb.VimonadeServiceServer {
 	return &vimonadeServiceServer{fileStore: fileStore, lineEnding: lineEnding, logger: logger}
 }
 
@@ -120,7 +120,7 @@ func (s *vimonadeServiceServer) Copy(ctx context.Context, message *wrappers.Stri
 		s.logger.Debug("Copy requested: message: " + message.GetValue())
 
 		if err := clipboard.WriteAll(message.GetValue()); err != nil {
-			s.logger.Debug("Writing to clipboard failed: %v", err)
+			s.logger.Fatal("Writing to clipboard failed: " + err.Error())
 			return &empty.Empty{}, err
 		}
 	} else {
@@ -141,7 +141,7 @@ func (s *vimonadeServiceServer) Paste(ctx context.Context, message *wrappers.Str
 
 		_, err := clipboard.ReadAll()
 		if err != nil {
-			s.logger.Debug("Writing to clipboard failed: %v", err)
+			s.logger.Fatal("Reading from clipboard failed: " + err.Error())
 			return &wrappers.StringValue{Value: ""}, err
 		}
 	} else {
@@ -188,7 +188,7 @@ func (s *vimonadeServiceServer) contextError(ctx context.Context) error {
 		s.logger.Debug("request is canceled")
 		return status.Error(codes.Canceled, "request is canceled")
 	case context.DeadlineExceeded:
-		s.logger.Debug("request is canceled")
+		s.logger.Debug("deadline is exceeded")
 		return status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	default:
 		return nil
