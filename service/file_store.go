@@ -46,12 +46,12 @@ func (store *DiskFileStore) Save(
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return "", fmt.Errorf("cannot create file file: %w", err)
+		return "", fmt.Errorf("cannot create file file: %s", err)
 	}
 
 	_, err = fileData.WriteTo(file)
 	if err != nil {
-		return "", fmt.Errorf("cannot write file to file: %w", err)
+		return "", fmt.Errorf("cannot write file to file: %s", err)
 	}
 
 	store.mutex.Lock()
