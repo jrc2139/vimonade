@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 
@@ -43,11 +44,13 @@ func Do(c *lemon.CLI, args []string) int {
 	switch c.Type {
 	case lemon.COPY:
 		logger.Debug("Copying text")
-		return vc.Copy(c, logger, grpc.WithInsecure())
+		return vc.Copy(c, logger, grpc.WithInsecure(), grpc.WithConnectParams(
+			grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.PASTE:
 		logger.Debug("Pasting text")
-		return vc.Paste(c, logger, grpc.WithInsecure())
+		return vc.Paste(c, logger, grpc.WithInsecure(), grpc.WithConnectParams(
+			grpc.ConnectParams{MinConnectTimeout: 1 * time.Second}))
 
 	case lemon.SEND:
 		logger.Debug("Sending file")
