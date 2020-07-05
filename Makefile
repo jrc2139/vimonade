@@ -15,8 +15,7 @@ build:
 	go build -o ${BIN} -v -ldflags "-X github.com/jrc2139/vimonade/lemon.Version=$(VERSION)" ${INSECURE_DIR}
 
 install:
-	make build
-	mv ${BIN} ${GOPATH}/bin
+	go install -v -ldflags "-X github.com/jrc2139/vimonade/lemon.Version=$(VERSION)" ${INSECURE_DIR}
 
 install-remote:
 	make build-insecure
