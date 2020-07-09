@@ -36,7 +36,7 @@ func Do(c *lemon.CLI, args []string) int {
 	}
 
 	opts := []grpc.DialOption{grpc.WithInsecure(),
-		grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 100 * time.Millisecond})}
+		grpc.WithConnectParams(grpc.ConnectParams{MinConnectTimeout: 10 * time.Millisecond})}
 
 	switch c.Type {
 	case lemon.COPY:
