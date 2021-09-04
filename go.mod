@@ -1,6 +1,6 @@
 module github.com/jrc2139/vimonade
 
-go 1.14
+go 1.17
 
 require (
 	github.com/GeertJohan/go.rice v1.0.0
@@ -14,4 +14,10 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20200615140333-fd031eab31e7 // indirect
 	google.golang.org/grpc v1.29.1
+)
+
+require (
+	go.uber.org/atomic v1.6.0 // indirect
+	go.uber.org/multierr v1.5.0 // indirect
+	google.golang.org/protobuf v1.24.0 // indirect
 )
